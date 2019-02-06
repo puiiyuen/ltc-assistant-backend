@@ -1,10 +1,17 @@
+
+/**
+ * User Controller
+ *
+ * @author Peiyuan
+ * 2019-01-21
+ */
+
 package com.minipgm.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/")
@@ -13,19 +20,25 @@ public class UserController {
     @Autowired
     private UserService service;
 
-    @RequestMapping
-    public String helloUser(){
-        return "Hello UserController";
+    @RequestMapping("/register")
+    public boolean register(){
+        return true;
     }
 
     @RequestMapping("/allid")
-    public List<Integer> allId(String name){
+    public Map<String,Object> allId(String name) {
         return service.allId(name);
     }
 
     @RequestMapping("/alluser")
-    public List<User> allUser(){
+    public List<User> allUser() {
         return service.allUser();
     }
+
+    @RequestMapping("/mapuser")
+    public Map<String,Object> mapUser(String username){
+        return service.mapUser(username);
+    }
+
 
 }

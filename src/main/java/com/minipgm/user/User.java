@@ -1,9 +1,3 @@
-package com.minipgm.user;
-
-import com.minipgm.user.enums.*;
-
-import java.util.Date;
-
 /**
  * User Class
  *
@@ -11,12 +5,14 @@ import java.util.Date;
  * 2019-01-21
  */
 
+package com.minipgm.user;
+
+import com.minipgm.user.enums.*;
+
 public class User {
 
     private int id;
     private String name;
-    private Date dob;
-    private SexEnum sex;
     private String phone;
     private String email;
     private UserTypeEnum userType;
@@ -35,22 +31,6 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Date getDob() {
-        return dob;
-    }
-
-    public void setDob(Date dob) {
-        this.dob = dob;
-    }
-
-    public SexEnum getSex() {
-        return sex;
-    }
-
-    public void setSex(SexEnum sex) {
-        this.sex = sex;
     }
 
     public String getPhone() {
