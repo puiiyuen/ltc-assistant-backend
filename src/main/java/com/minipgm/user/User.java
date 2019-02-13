@@ -11,26 +11,27 @@ import com.minipgm.user.enums.*;
 
 public class User {
 
-    private int id;
-    private String name;
+    private int userId;
+    private String username;
     private String phone;
     private String email;
+    private String password;
     private UserTypeEnum userType;
 
     public int getId() {
-        return id;
+        return userId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int userId) {
+        this.userId = userId;
     }
 
     public String getName() {
-        return name;
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String username) {
+        this.username = username;
     }
 
     public String getPhone() {
@@ -47,6 +48,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public UserTypeEnum getUserType() {
