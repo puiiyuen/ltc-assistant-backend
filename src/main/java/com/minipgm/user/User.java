@@ -18,6 +18,19 @@ public class User {
     private String password;
     private UserTypeEnum userType;
 
+    public User(){
+        super();
+    }
+
+    public User(User user) {
+        this.setId(user.getId());
+        this.setPassword(user.getPassword());
+        this.setUsername(user.getUsername());
+        this.setPhone(user.getPhone());
+        this.setEmail(user.getEmail());
+        this.setUserType(user.getUserType());
+    }
+
     public int getId() {
         return userId;
     }
@@ -26,11 +39,11 @@ public class User {
         this.userId = userId;
     }
 
-    public String getName() {
+    public String getUsername() {
         return username;
     }
 
-    public void setName(String username) {
+    public void setUsername(String username) {
         this.username = username;
     }
 

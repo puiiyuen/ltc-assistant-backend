@@ -12,6 +12,7 @@ import com.minipgm.util.operationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 @RestController
@@ -21,34 +22,64 @@ public class UserController {
     @Autowired
     private UserService service;
 
-    //test demo
-    @RequestMapping("/allid")
-    public Map<String, Object> allId(String name) {
-        return service.allId(name);
+    @PostMapping("/login")
+    public int login(@RequestBody Map<String, Object> param, HttpSession session) {
+        try {
+            int userId = Integer.parseInt(param.get("userId").toString());
+            String password = param.get("password").toString();
+            int toLogin = service.login(userId, password);
+            if (toLogin == operationStatus.SUCCESSFUL) {
+                session.setAttribute("userId", userId);
+                session.setMaxInactiveInterval(600);
+                return operationStatus.SUCCESSFUL;
+            } else {
+                return toLogin;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
     }
 
-    @RequestMapping("/alluser")
-    public List<User> allUser() {
-        return service.allUser();
+    @PostMapping("/activate")
+    public int activate(@RequestBody Map<String, Object> param) {
+        try {
+            int userId = Integer.parseInt(param.get("userId").toString());
+            String password = param.get("password").toString();
+            int activateCode = Integer.parseInt(param.get("activateCode").toString());
+            if (service.activateAccount(userId, password, activateCode) == 1) {
+                return operationStatus.SUCCESSFUL;
+            } else {
+                return operationStatus.FAILED;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
     }
 
-    @RequestMapping("/mapuser")
-    public Map<String, Object> mapUser(String username) {
-        return service.mapUser(username);
+    @GetMapping("/session")
+    public int sessionCheck(HttpSession session) {
+        try {
+            if (session.getAttribute("userId") != null) {
+                return operationStatus.ISEXIST;
+            } else {
+                return operationStatus.NOTEXIST;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
     }
-    //end test demo
 
-    @PostMapping(value = "/login")
-    public int login(@RequestBody Map<String, Object> param) {
-        int userId = Integer.parseInt(param.get("userId").toString());
-        String password = param.get("password").toString();
-        int operation = (service.login(userId, password));
-        if (operation == operationStatus.SUCCESSFUL)
+    @GetMapping("/logout")
+    public int logout(HttpSession session) {
+        try {
+            session.invalidate();
             return operationStatus.SUCCESSFUL;
-        else
-            return operationStatus.FAILED;
-
+        } catch (Exception e) {
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
     }
-
-
 }

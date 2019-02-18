@@ -1,3 +1,11 @@
+/**
+ * Utility password encryption tool (SHA-256)
+ *
+ * @author Peiyuan
+ * 2019-02-17
+ */
+
+
 package com.minipgm.util;
 
 import java.nio.charset.StandardCharsets;

@@ -11,32 +11,49 @@ import com.minipgm.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-
 @Service
 public class UserService {
 
     @Autowired
     private UserMapper user;
 
-    public Map<String, Object> allId(String name) {
-        return user.allId(name);
-    }
-
-    public List<User> allUser() {
-        return user.allUser();
-    }
-
-    public Map<String, Object> mapUser(String username) {
-        return user.mapUser(username);
-    }
+    /**
+     * Login
+     *
+     * @param userId   User's Id
+     * @param password User's password
+     * @return Operation status code
+     */
 
     public int login(int userId, String password) {
-        String encryptPassword = shaEncryption.passwordEncryption(password);
-        if (user.existUser(userId, encryptPassword) != null)
-            return operationStatus.SUCCESSFUL;
-        else
-            return operationStatus.FAILED;
+        if (user.isActivated(userId, "activated") != null) {
+            String encryptedPassword = shaEncryption.passwordEncryption(password);
+            if (user.existUser(userId, encryptedPassword) != null)
+                return operationStatus.SUCCESSFUL;
+            else
+                return operationStatus.FAILED;
+        } else {
+            return operationStatus.INACTIVATED;
+        }
+
+    }
+
+    /**
+     * Activate account
+     *
+     * @param userId       User's Id
+     * @param password     User's password
+     * @param activateCode A code to activate the account which assign by system
+     * @return Operation status code
+     */
+
+    public int activateAccount(int userId, String password, int activateCode) {
+        String encryptedPassword = shaEncryption.passwordEncryption(password);
+        return user.activateAccount(userId, encryptedPassword, activateCode);
+    }
+
+    public User onlineUser(int userId) {
+        return user.getUserById(userId);
     }
 
 
