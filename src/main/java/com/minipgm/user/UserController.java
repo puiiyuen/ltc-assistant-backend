@@ -72,6 +72,18 @@ public class UserController {
         }
     }
 
+    @GetMapping("/user")
+    public User getOnlineUser(HttpSession session){
+        try {
+            if (session.getAttribute("userId")!=null){
+                return service.onlineUser(Integer.parseInt(session.getAttribute("userId").toString()));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @GetMapping("/logout")
     public int logout(HttpSession session) {
         try {
