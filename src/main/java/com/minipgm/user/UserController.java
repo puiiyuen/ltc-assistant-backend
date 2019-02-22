@@ -73,15 +73,18 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public User getOnlineUser(HttpSession session){
+    public User getOnlineUser(HttpSession session) {
+        User fetch = new User();
         try {
-            if (session.getAttribute("userId")!=null){
-                return service.onlineUser(Integer.parseInt(session.getAttribute("userId").toString()));
+            if (session.getAttribute("userId") != null) {
+                fetch = service.onlineUser(Integer.parseInt(session.getAttribute("userId").toString()));
+                System.out.println(fetch.getUserId());
+                return fetch;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return fetch.defaultUser();
     }
 
     @GetMapping("/logout")

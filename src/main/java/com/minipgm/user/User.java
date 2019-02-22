@@ -23,7 +23,7 @@ public class User {
     }
 
     public User(User user) {
-        this.setId(user.getId());
+        this.setUserId(user.getUserId());
         this.setPassword(user.getPassword());
         this.setUsername(user.getUsername());
         this.setPhone(user.getPhone());
@@ -31,11 +31,22 @@ public class User {
         this.setUserType(user.getUserType());
     }
 
-    public int getId() {
+    public User defaultUser(){
+        User du = new User();
+        du.setUserType(UserTypeEnum.NOTYPE);
+        du.setEmail("noname@no.com");
+        du.setPhone("000-000-000");
+        du.setPassword("null");
+        du.setUserId(-1);
+        du.setUsername("noname");
+        return du;
+    }
+
+    public int getUserId() {
         return userId;
     }
 
-    public void setId(int userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
