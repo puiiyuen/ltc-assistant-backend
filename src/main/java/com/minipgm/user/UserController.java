@@ -30,6 +30,7 @@ public class UserController {
             int toLogin = service.login(userId, password);
             if (toLogin == operationStatus.SUCCESSFUL) {
                 session.setAttribute("userId", userId);
+                session.setAttribute("userType","ADMIN");
                 session.setMaxInactiveInterval(600);
                 return operationStatus.SUCCESSFUL;
             } else {
@@ -78,7 +79,6 @@ public class UserController {
         try {
             if (session.getAttribute("userId") != null) {
                 fetch = service.onlineUser(Integer.parseInt(session.getAttribute("userId").toString()));
-                System.out.println(fetch.getUserId());
                 return fetch;
             }
         } catch (Exception e) {

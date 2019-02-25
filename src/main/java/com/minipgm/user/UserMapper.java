@@ -15,7 +15,7 @@ public interface UserMapper {
     @Select("SELECT username FROM user_auth WHERE user_id=#{userId} AND account_status=#{accountStatus}")
     String isActivated(int userId, String accountStatus);
 
-    @Select("SELECT username FROM user_auth WHERE user_id=#{userId} AND password=#{password} AND user_type='admin'")
+    @Select("SELECT username FROM user_auth WHERE user_id=#{userId} AND password=#{password} AND user_type='ADMIN'")
     String existUser(int userId, String password);
 
     @Results({
