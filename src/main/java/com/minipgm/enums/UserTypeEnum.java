@@ -1,11 +1,11 @@
-package com.minipgm.user.enums;
+package com.minipgm.enums;
 
 public enum UserTypeEnum {
-    ROOT("root"),
-    ADMIN("admin"),
-    RESIDENT("resident"),
-    RESFAMILY("resfamily"),
-    NOTYPE("notype");
+    ROOT("ROOT"),
+    ADMIN("ADMIN"),
+    RESIDENT("RESIDENT"),
+    RESFAMILY("RESFAMILY"),
+    NOTYPE("NOTYPE");
 
     private String value;
 

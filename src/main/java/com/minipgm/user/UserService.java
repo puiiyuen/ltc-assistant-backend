@@ -7,6 +7,7 @@
 
 package com.minipgm.user;
 
+import com.minipgm.enums.UserTypeEnum;
 import com.minipgm.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     @Autowired
-    private UserMapper user;
+    private UserMapper userMapper;
 
     /**
      * Login
@@ -26,9 +27,9 @@ public class UserService {
      */
 
     public int login(int userId, String password) {
-        if (user.isActivated(userId, "activated") != null) {
+        if (userMapper.isActivated(userId, "activated") != null) {
             String encryptedPassword = shaEncryption.passwordEncryption(password);
-            if (user.existUser(userId, encryptedPassword) != null)
+            if (userMapper.existUser(userId, encryptedPassword, UserTypeEnum.ADMIN) != null)
                 return operationStatus.SUCCESSFUL;
             else
                 return operationStatus.FAILED;
@@ -49,11 +50,16 @@ public class UserService {
 
     public int activateAccount(int userId, String password, int activateCode) {
         String encryptedPassword = shaEncryption.passwordEncryption(password);
-        return user.activateAccount(userId, encryptedPassword, activateCode);
+        return userMapper.activateAccount(userId, encryptedPassword, activateCode);
     }
 
     public User onlineUser(int userId) {
-        return user.getUserById(userId);
+        return userMapper.getUserById(userId);
+    }
+
+    public int createAccount(){
+
+        return 0;
     }
 
 

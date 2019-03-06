@@ -7,6 +7,7 @@
 
 package com.minipgm.user;
 
+import com.minipgm.enums.UserTypeEnum;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
@@ -15,8 +16,8 @@ public interface UserMapper {
     @Select("SELECT username FROM user_auth WHERE user_id=#{userId} AND account_status=#{accountStatus}")
     String isActivated(int userId, String accountStatus);
 
-    @Select("SELECT username FROM user_auth WHERE user_id=#{userId} AND password=#{password} AND user_type='ADMIN'")
-    String existUser(int userId, String password);
+    @Select("SELECT username FROM user_auth WHERE user_id=#{userId} AND password=#{password} AND user_type=#{userType}")
+    String existUser(int userId, String password, UserTypeEnum userType);
 
     @Results({
             @Result(property = "userId", column = "user_id"),
@@ -27,8 +28,20 @@ public interface UserMapper {
     @Select("SELECT user_id,username,phone,email FROM user_auth WHERE user_id=#{userId}")
     User getUserById(int userId);
 
-    @Update("UPDATE user_auth SET password=#{password},account_status='activated' WHERE user_id=#{userId} AND regcode=#{activateCode}")
+    @Update("UPDATE user_auth SET password=#{password},account_status='activated',regcode=-1 WHERE user_id=#{userId} AND regcode=#{activateCode}")
     int activateAccount(int userId, String password, int activateCode);
+
+    @Insert("INSERT INTO user_auth (user_id,username,user_type,regcode) VALUES (#{userId},#{username},#{userType},#{regcode})")
+    int createAccount(int userId, String username,UserTypeEnum userType,int regcode);
+
+    @Select("SELECT COUNT(*) FROM user_auth WHERE user_id LIKE '%#{ids}%'")
+    int countAccountByDay(int ids);
+
+    @Select("SELECT username FROM user_auth WHERE regcode=#{regcode}")
+    String existRegCode(int regcode);
+
+    @Select("SELECT SUM(regcode) FROM user_auth WHERE regcode>=1000")
+    int sumRegCode();
 
 
 }

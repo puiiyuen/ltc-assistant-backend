@@ -6,6 +6,7 @@
  */
 package com.minipgm.resident;
 
+import com.minipgm.enums.SexEnum;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -58,4 +59,19 @@ public interface ResidentMapper {
     @Select("SELECT res.*, user.phone, user.email FROM res_profile AS res,user_auth AS user " +
             "WHERE user.user_id=res.res_id AND user.user_id=#{userId}")
     ResidentDetail getResidentById(int userId);
+
+    @Select("SELECT name FROM res_profile WHERE gover_id=#{goverId}")
+    String existResident(String goverId);
+
+    @Insert("INSERT INTO res_profile (res_id,name,sex,dob,num_bed,gover_id,address," +
+            "emergency_name,emergency_phone,family_member_id,move_in_date,medical_history) " +
+            "VALUES (#{resId},#{name},#{sex},#{dob},#{numOfBed},#{goverId},#{address}," +
+            "#{egName},#{egPhone},#{famId},#{moveInDate},#{medicalHistory})")
+    int createResident(int resId, String name, SexEnum sex, String dob,
+                       int numOfBed, String goverId, String address,String egName,
+                       String egPhone,int famId,String moveInDate,String medicalHistory);
+
+    @Insert("INSERT INTO user_auth (user_id,username,user_type,regcode) VALUES (#{userId},#{username},#{userType},#{regcode})")
+    int createResidentFamily();
+
 }

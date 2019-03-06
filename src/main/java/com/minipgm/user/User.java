@@ -7,7 +7,7 @@
 
 package com.minipgm.user;
 
-import com.minipgm.user.enums.*;
+import com.minipgm.enums.*;
 
 public class User {
 

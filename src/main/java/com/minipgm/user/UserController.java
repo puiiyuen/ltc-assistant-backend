@@ -8,6 +8,7 @@
 
 package com.minipgm.user;
 
+import com.minipgm.enums.UserTypeEnum;
 import com.minipgm.util.operationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class UserController {
             int toLogin = service.login(userId, password);
             if (toLogin == operationStatus.SUCCESSFUL) {
                 session.setAttribute("userId", userId);
-                session.setAttribute("userType","ADMIN");
+                session.setAttribute("userType", UserTypeEnum.ADMIN);
                 session.setMaxInactiveInterval(600);
                 return operationStatus.SUCCESSFUL;
             } else {

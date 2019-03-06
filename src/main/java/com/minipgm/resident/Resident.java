@@ -8,7 +8,7 @@
 package com.minipgm.resident;
 
 
-import com.minipgm.user.enums.SexEnum;
+import com.minipgm.enums.SexEnum;
 
 import java.sql.Date;
 
