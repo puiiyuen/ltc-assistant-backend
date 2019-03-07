@@ -27,7 +27,7 @@ public class ResidentBase {
         super();
     }
 
-    public ResidentBase(ResidentDetail res) {
+    public ResidentBase(Resident res) {
         this.resId = res.getResId();
         this.name = res.getName();
         this.phone = res.getPhone();

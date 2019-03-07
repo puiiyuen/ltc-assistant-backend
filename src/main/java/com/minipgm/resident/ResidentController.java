@@ -56,8 +56,7 @@ public class ResidentController {
     public int addResident(@RequestBody Map<String, Object> param, HttpSession session) {
         if (session.getAttribute("userId") != null && session.getAttribute("userType").toString().equals("ADMIN")) {
             try {
-                residentService.addResident(param);
-                return operationStatus.SUCCESSFUL;
+                return residentService.addResident(param);
             } catch (Exception e) {
                 e.printStackTrace();
                 return operationStatus.SERVERERROR;

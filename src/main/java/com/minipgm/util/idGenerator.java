@@ -23,7 +23,8 @@ public class idGenerator {
     }
 
     public static int newId(int type) {
-        int no = userMapper.countAccountByDay(todayId(type));
+
+        int no = userMapper.countAccountByDay('%'+Integer.toString(todayId(type))+'%');//!!Exception!!
         if (no > 999) {//daily max 1000
             return -1;
         } else {

@@ -5,12 +5,12 @@
  * 2019-02-24
  */
 
-package com.minipgm.resident;
 
+package com.minipgm.resident;
 
 import com.minipgm.enums.SexEnum;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class Resident {
 
@@ -18,6 +18,8 @@ public class Resident {
     private int familyId;
     private String name;
     private String goverId;
+    private String phone;
+    private String email;
     private int numOfBed;
     private SexEnum sex;
     private Date dob;
@@ -28,6 +30,31 @@ public class Resident {
     private String medicalHistory;
     private Date moveInDate;
     private Date moveOutDate;
+
+    public Resident() {
+        super();
+    }
+
+    public Resident(int resId, int familyId, String name, String goverId, String phone, String email, int numOfBed,
+                    SexEnum sex, Date dob, String address, String photoUrl, String egName, String egPhone,
+                    String medicalHistory, Date moveInDate, Date moveOutDate) {
+        this.resId = resId;
+        this.familyId = familyId;
+        this.name = name;
+        this.goverId = goverId;
+        this.phone = phone;
+        this.email = email;
+        this.numOfBed = numOfBed;
+        this.sex = sex;
+        this.dob = dob;
+        this.address = address;
+        this.photoUrl = photoUrl;
+        this.egName = egName;
+        this.egPhone = egPhone;
+        this.medicalHistory = medicalHistory;
+        this.moveInDate = moveInDate;
+        this.moveOutDate = moveOutDate;
+    }
 
     public int getResId() {
         return resId;
@@ -59,6 +86,22 @@ public class Resident {
 
     public void setGoverId(String goverId) {
         this.goverId = goverId;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public int getNumOfBed() {
