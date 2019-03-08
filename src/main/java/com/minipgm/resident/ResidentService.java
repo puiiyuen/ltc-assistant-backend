@@ -7,9 +7,9 @@
 
 package com.minipgm.resident;
 
-import com.minipgm.enums.SexEnum;
-import com.minipgm.enums.UserTypeEnum;
+import com.minipgm.enums.*;
 import com.minipgm.user.UserMapper;
+import com.minipgm.user.UserService;
 import com.minipgm.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,12 @@ public class ResidentService {
 
     @Autowired
     private ResidentMapper residentMapper;
-    private UserMapper userMapper;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private regCodeGenerator regCodeGenerator;
+    @Autowired
+    private idGenerator idGenerator;
 
     public List<ResidentBase> getResBaseInfo() {
 
@@ -43,17 +48,25 @@ public class ResidentService {
         return residentMapper.getResidentById(userId);
     }
 
-    @Transactional
+    @Transactional//!!! [Working]Roll back !!!
     public int addResident(Map<String, Object> data) {
-        int resId = idGenerator.newId(1);
-        int famId = idGenerator.newId(2);
-        Resident newRes = new Resident(resId, famId, data.get("name").toString(), data.get("goverId").toString(),
-                data.get("phone").toString(), data.get("email").toString(), Integer.parseInt(data.get("bed").toString()),
-                SexEnum.valueOf(data.get("sex").toString()), Date.valueOf(data.get("dob").toString()),
-                data.get("address").toString(), "default photo", data.get("famName").toString(),
-                data.get("famPhone").toString(), data.get("medicalHistory").toString(),
-                Date.valueOf(data.get("moveInDate").toString()), Date.valueOf("2099-12-31"));
+
         try {
+            int resId = idGenerator.newId(1);
+            int famId = idGenerator.newId(2);
+            int resRegcode = regCodeGenerator.newRegCode();
+            int famRegcode = regCodeGenerator.newRegCode();
+
+            if (resId == -1 || famId == -1 || resRegcode == -1 || famRegcode == -1) {
+                return operationStatus.FAILED;
+            }
+
+            Resident newRes = new Resident(resId, famId, data.get("name").toString(), data.get("goverId").toString(),
+                    data.get("phone").toString(), data.get("email").toString(), Integer.parseInt(data.get("bed").toString()),
+                    SexEnum.valueOf(data.get("sex").toString()), Date.valueOf(data.get("dob").toString()),
+                    data.get("address").toString(), "default photo", data.get("famName").toString(),
+                    data.get("famPhone").toString(), data.get("medicalHistory").toString(),
+                    Date.valueOf(data.get("moveInDate").toString()), Date.valueOf("2099-12-31"));
 //            if (residentMapper.existResident(newRes.getGoverId()) == null) {
 //                if (userMapper.createAccount(newRes.getResId(),newRes.getName(),
 //                        UserTypeEnum.RESIDENT,regCodeGenerator.newRegCode())==1){
@@ -74,10 +87,8 @@ public class ResidentService {
 //                return operationStatus.ISEXIST;
 //            }
             if (residentMapper.existResident(newRes.getGoverId()) == null) {
-                userMapper.createAccount(newRes.getResId(), newRes.getName(),
-                        UserTypeEnum.RESIDENT, regCodeGenerator.newRegCode());
-                userMapper.createAccount(famId, newRes.getEgName(),
-                        UserTypeEnum.RESFAMILY, regCodeGenerator.newRegCode());
+                userService.createAccount(newRes.getResId(),newRes.getName(),UserTypeEnum.RESIDENT,resRegcode);
+                userService.createAccount(newRes.getFamilyId(),newRes.getEgName(),UserTypeEnum.RESFAMILY,famRegcode);
                 residentMapper.createResident(newRes.getResId(), newRes.getName(), newRes.getSex(),
                         newRes.getDob(), newRes.getNumOfBed(), newRes.getGoverId(), newRes.getAddress(),
                         newRes.getEgName(), newRes.getEgPhone(), newRes.getFamilyId(), newRes.getMoveInDate(),

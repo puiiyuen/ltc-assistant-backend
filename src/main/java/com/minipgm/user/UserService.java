@@ -8,9 +8,11 @@
 package com.minipgm.user;
 
 import com.minipgm.enums.UserTypeEnum;
+import com.minipgm.resident.Resident;
 import com.minipgm.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -29,10 +31,12 @@ public class UserService {
     public int login(int userId, String password) {
         if (userMapper.isActivated(userId, "activated") != null) {
             String encryptedPassword = shaEncryption.passwordEncryption(password);
-            if (userMapper.existUser(userId, encryptedPassword, UserTypeEnum.ADMIN) != null)
+            if (userMapper.existUser(userId, encryptedPassword, UserTypeEnum.ADMIN) != null) {
                 return operationStatus.SUCCESSFUL;
-            else
+            } else {
                 return operationStatus.FAILED;
+            }
+
         } else {
             return operationStatus.INACTIVATED;
         }
@@ -57,10 +61,15 @@ public class UserService {
         return userMapper.getUserById(userId);
     }
 
-    public int createAccount(){
+    @Transactional
+    public int createAccount(int userId, String username, UserTypeEnum userType, int regcode) {
+        try {
+            userMapper.createAccount(userId, username, userType, regcode);
+            return operationStatus.SUCCESSFUL;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
 
-        return 0;
     }
-
-
 }

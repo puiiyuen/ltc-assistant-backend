@@ -1,12 +1,17 @@
 package com.minipgm.util;
 
 import com.minipgm.user.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 
 import java.util.Calendar;
 
+@Service
 public class idGenerator {
 
-    private static UserMapper userMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     private static int today() {
 
@@ -22,9 +27,9 @@ public class idGenerator {
 
     }
 
-    public static int newId(int type) {
+    public int newId(int type) {
 
-        int no = userMapper.countAccountByDay('%'+Integer.toString(todayId(type))+'%');//!!Exception!!
+        int no = userMapper.countAccountByDay('%'+Integer.toString(todayId(type))+'%');
         if (no > 999) {//daily max 1000
             return -1;
         } else {
@@ -32,7 +37,7 @@ public class idGenerator {
         }
     }
 
-    private static int todayId(int type) {
+    private int todayId(int type) {
         return today() * 10 + type;
     }
 }

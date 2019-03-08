@@ -1,12 +1,16 @@
 package com.minipgm.util;
 
 import com.minipgm.user.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class regCodeGenerator {
 
-    private static UserMapper userMapper;
+    @Autowired
+    private UserMapper userMapper;
 
-    public static int newRegCode() {
+    public int newRegCode() {
 
         if (userMapper.sumRegCode() > 49495500) {// sum of 1000-9999
             return -1;

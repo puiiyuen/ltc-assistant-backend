@@ -34,7 +34,7 @@ public interface UserMapper {
     @Insert("INSERT INTO user_auth (user_id,username,user_type,regcode) VALUES (#{userId},#{username},#{userType},#{regcode})")
     int createAccount(int userId, String username,UserTypeEnum userType,int regcode);
 
-    @Select("SELECT COUNT(*) FROM user_auth WHERE user_id LIKE '#{ids}'")
+    @Select("SELECT COUNT(*) AS user_amount FROM user_auth WHERE user_id LIKE #{ids}")
     int countAccountByDay(String ids);
 
     @Select("SELECT username FROM user_auth WHERE regcode=#{regcode}")
