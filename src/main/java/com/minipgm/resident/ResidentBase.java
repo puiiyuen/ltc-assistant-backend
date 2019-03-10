@@ -20,8 +20,8 @@ public class ResidentBase {
     private int numOfBed;
     private SexEnum sex;
     private Date dob;
-    private String egName;
-    private String egPhone;
+    private String famName;
+    private String famPhone;
 
     public ResidentBase() {
         super();
@@ -34,8 +34,8 @@ public class ResidentBase {
         this.numOfBed = res.getNumOfBed();
         this.sex = res.getSex();
         this.dob = res.getDob();
-        this.egName = res.getEgName();
-        this.egPhone = res.getEgPhone();
+        this.famName = res.getFamName();
+        this.famPhone = res.getFamPhone();
     }
 
     public int getResId() {
@@ -86,19 +86,19 @@ public class ResidentBase {
         this.dob = dob;
     }
 
-    public String getEgName() {
-        return egName;
+    public String getFamName() {
+        return famName;
     }
 
-    public void setEgName(String egName) {
-        this.egName = egName;
+    public void setFamName(String famName) {
+        this.famName = famName;
     }
 
-    public String getEgPhone() {
-        return egPhone;
+    public String getFamPhone() {
+        return famPhone;
     }
 
-    public void setEgPhone(String egPhone) {
-        this.egPhone = egPhone;
+    public void setFamPhone(String famPhone) {
+        this.famPhone = famPhone;
     }
 }

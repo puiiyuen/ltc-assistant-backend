@@ -8,17 +8,16 @@
 package com.minipgm.resident;
 
 import com.minipgm.enums.*;
-import com.minipgm.user.UserMapper;
 import com.minipgm.user.UserService;
 import com.minipgm.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.*;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.nio.file.*;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ResidentService {
@@ -48,7 +47,7 @@ public class ResidentService {
         return residentMapper.getResidentById(userId);
     }
 
-    @Transactional//!!! [Working]Roll back !!!
+    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
     public int addResident(Map<String, Object> data) {
 
         try {
@@ -62,11 +61,12 @@ public class ResidentService {
             }
 
             Resident newRes = new Resident(resId, famId, data.get("name").toString(), data.get("goverId").toString(),
-                    data.get("phone").toString(), data.get("email").toString(), Integer.parseInt(data.get("bed").toString()),
-                    SexEnum.valueOf(data.get("sex").toString()), Date.valueOf(data.get("dob").toString()),
-                    data.get("address").toString(), "default photo", data.get("famName").toString(),
-                    data.get("famPhone").toString(), data.get("medicalHistory").toString(),
-                    Date.valueOf(data.get("moveInDate").toString()), Date.valueOf("2099-12-31"));
+                    data.get("phone").toString(), data.get("email").toString(),
+                    Integer.parseInt(data.get("bed").toString()), SexEnum.valueOf(data.get("sex").toString()),
+                    Date.valueOf(data.get("dob").toString()), data.get("address").toString(),
+                    data.get("famName").toString(), data.get("famPhone").toString(), data.get("famEmail").toString(),
+                    data.get("famAddress").toString(), data.get("medicalHistory").toString(),
+                    Date.valueOf(data.get("moveInDate").toString()));
 //            if (residentMapper.existResident(newRes.getGoverId()) == null) {
 //                if (userMapper.createAccount(newRes.getResId(),newRes.getName(),
 //                        UserTypeEnum.RESIDENT,regCodeGenerator.newRegCode())==1){
@@ -87,19 +87,47 @@ public class ResidentService {
 //                return operationStatus.ISEXIST;
 //            }
             if (residentMapper.existResident(newRes.getGoverId()) == null) {
-                userService.createAccount(newRes.getResId(),newRes.getName(),UserTypeEnum.RESIDENT,resRegcode);
-                userService.createAccount(newRes.getFamilyId(),newRes.getEgName(),UserTypeEnum.RESFAMILY,famRegcode);
+                userService.createAccount(newRes.getResId(), "住户" + newRes.getResId(),
+                        UserTypeEnum.RESIDENT, resRegcode, newRes.getPhone(), newRes.getEmail());
+                userService.createAccount(newRes.getFamilyId(), "家属" + newRes.getFamilyId(),
+                        UserTypeEnum.RESFAMILY, famRegcode, newRes.getFamPhone(), newRes.getFamEmail());
                 residentMapper.createResident(newRes.getResId(), newRes.getName(), newRes.getSex(),
                         newRes.getDob(), newRes.getNumOfBed(), newRes.getGoverId(), newRes.getAddress(),
-                        newRes.getEgName(), newRes.getEgPhone(), newRes.getFamilyId(), newRes.getMoveInDate(),
+                        newRes.getFamilyId(), newRes.getMoveInDate(),
                         newRes.getMedicalHistory());
+                residentMapper.createResidentFamily(newRes.getFamilyId(), newRes.getFamName(), newRes.getFamAddress());
                 return operationStatus.SUCCESSFUL;
             } else {
                 return operationStatus.FAILED;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
             return operationStatus.SERVERERROR;
         }
+    }
+
+
+    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
+    public int updatePhotoById(byte[] photo, String photoName, String goverId) {
+        try {
+            String UPLOAD_FOLDER = "/opt/photo/";
+            Path path = Paths.get(UPLOAD_FOLDER + photoName);
+            if (!Files.isWritable(path)) {
+                Files.createDirectories(Paths.get(UPLOAD_FOLDER));
+            }
+            Files.write(path, photo);
+            String photoUrl = "http://localhost:8080/photo/" + photoName;
+            if (residentMapper.updatePhotoByGoverId(photoUrl, goverId) == 1) {
+                return operationStatus.SUCCESSFUL;
+            } else {
+                return operationStatus.FAILED;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
+            return operationStatus.SERVERERROR;
+        }
+
     }
 }

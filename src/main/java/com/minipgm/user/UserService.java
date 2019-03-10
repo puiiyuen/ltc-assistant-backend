@@ -8,11 +8,12 @@
 package com.minipgm.user;
 
 import com.minipgm.enums.UserTypeEnum;
-import com.minipgm.resident.Resident;
 import com.minipgm.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 @Service
 public class UserService {
@@ -52,19 +53,27 @@ public class UserService {
      * @return Operation status code
      */
 
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public int activateAccount(int userId, String password, int activateCode) {
-        String encryptedPassword = shaEncryption.passwordEncryption(password);
-        return userMapper.activateAccount(userId, encryptedPassword, activateCode);
+        try {
+            String encryptedPassword = shaEncryption.passwordEncryption(password);
+            return userMapper.activateAccount(userId, encryptedPassword, activateCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
+            return operationStatus.SERVERERROR;
+        }
     }
 
     public User onlineUser(int userId) {
         return userMapper.getUserById(userId);
     }
 
-    @Transactional
-    public int createAccount(int userId, String username, UserTypeEnum userType, int regcode) {
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public int createAccount(int userId, String username, UserTypeEnum userType,
+                             int regcode, String phone, String email) {
         try {
-            userMapper.createAccount(userId, username, userType, regcode);
+            userMapper.createAccount(userId, username, userType, regcode, phone, email);
             return operationStatus.SUCCESSFUL;
         } catch (Exception e) {
             e.printStackTrace();

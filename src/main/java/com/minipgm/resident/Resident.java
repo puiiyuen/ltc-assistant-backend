@@ -10,6 +10,7 @@ package com.minipgm.resident;
 
 import com.minipgm.enums.SexEnum;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class Resident {
@@ -25,19 +26,47 @@ public class Resident {
     private Date dob;
     private String address;
     private String photoUrl;
-    private String egName;
-    private String egPhone;
+    private String famName;
+    private String famPhone;
+    private String famEmail;
+    private String famAddress;
     private String medicalHistory;
     private Date moveInDate;
     private Date moveOutDate;
+    private Timestamp createDate;
+    private Timestamp updateDate;
 
     public Resident() {
         super();
     }
 
+    // 写入专用
     public Resident(int resId, int familyId, String name, String goverId, String phone, String email, int numOfBed,
-                    SexEnum sex, Date dob, String address, String photoUrl, String egName, String egPhone,
-                    String medicalHistory, Date moveInDate, Date moveOutDate) {
+                    SexEnum sex, Date dob, String address, String famName, String famPhone,
+                    String famEmail, String famAddress, String medicalHistory, Date moveInDate) {
+        this.resId = resId;
+        this.familyId = familyId;
+        this.name = name;
+        this.goverId = goverId;
+        this.phone = phone;
+        this.email = email;
+        this.numOfBed = numOfBed;
+        this.sex = sex;
+        this.dob = dob;
+        this.address = address;
+        this.famName = famName;
+        this.famPhone = famPhone;
+        this.famEmail = famEmail;
+        this.famAddress = famAddress;
+        this.medicalHistory = medicalHistory;
+        this.moveInDate = moveInDate;
+    }
+
+    //读取专用
+    public Resident(int resId, int familyId, String name, String goverId, String phone, String email, int numOfBed,
+                    SexEnum sex, Date dob, String address, String photoUrl, String famName, String famPhone,
+                    String famEmail, String famAddress, String medicalHistory, Date moveInDate, Date moveOutDate,
+                    Timestamp createDate, Timestamp updateDate) {
         this.resId = resId;
         this.familyId = familyId;
         this.name = name;
@@ -49,11 +78,15 @@ public class Resident {
         this.dob = dob;
         this.address = address;
         this.photoUrl = photoUrl;
-        this.egName = egName;
-        this.egPhone = egPhone;
+        this.famName = famName;
+        this.famPhone = famPhone;
+        this.famEmail = famEmail;
+        this.famAddress = famAddress;
         this.medicalHistory = medicalHistory;
         this.moveInDate = moveInDate;
         this.moveOutDate = moveOutDate;
+        this.createDate = createDate;
+        this.updateDate = updateDate;
     }
 
     public int getResId() {
@@ -144,22 +177,6 @@ public class Resident {
         this.photoUrl = photoUrl;
     }
 
-    public String getEgName() {
-        return egName;
-    }
-
-    public void setEgName(String egName) {
-        this.egName = egName;
-    }
-
-    public String getEgPhone() {
-        return egPhone;
-    }
-
-    public void setEgPhone(String egPhone) {
-        this.egPhone = egPhone;
-    }
-
     public String getMedicalHistory() {
         return medicalHistory;
     }
@@ -182,5 +199,53 @@ public class Resident {
 
     public void setMoveOutDate(Date moveOutDate) {
         this.moveOutDate = moveOutDate;
+    }
+
+    public String getFamName() {
+        return famName;
+    }
+
+    public void setFamName(String famName) {
+        this.famName = famName;
+    }
+
+    public String getFamPhone() {
+        return famPhone;
+    }
+
+    public void setFamPhone(String famPhone) {
+        this.famPhone = famPhone;
+    }
+
+    public String getFamEmail() {
+        return famEmail;
+    }
+
+    public void setFamEmail(String famEmail) {
+        this.famEmail = famEmail;
+    }
+
+    public String getFamAddress() {
+        return famAddress;
+    }
+
+    public void setFamAddress(String famAddress) {
+        this.famAddress = famAddress;
+    }
+
+    public Timestamp getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Timestamp createDate) {
+        this.createDate = createDate;
+    }
+
+    public Timestamp getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Timestamp updateDate) {
+        this.updateDate = updateDate;
     }
 }

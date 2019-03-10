@@ -28,11 +28,13 @@ public interface UserMapper {
     @Select("SELECT user_id,username,phone,email FROM user_auth WHERE user_id=#{userId}")
     User getUserById(int userId);
 
-    @Update("UPDATE user_auth SET password=#{password},account_status='activated',regcode=-1 WHERE user_id=#{userId} AND regcode=#{activateCode}")
+    @Update("UPDATE user_auth SET password=#{password},account_status='activated',regcode=-1 " +
+            "WHERE user_id=#{userId} AND regcode=#{activateCode}")
     int activateAccount(int userId, String password, int activateCode);
 
-    @Insert("INSERT INTO user_auth (user_id,username,user_type,regcode) VALUES (#{userId},#{username},#{userType},#{regcode})")
-    int createAccount(int userId, String username,UserTypeEnum userType,int regcode);
+    @Insert("INSERT INTO user_auth (user_id,username,user_type,regcode,phone,email) " +
+            "VALUES (#{userId},#{username},#{userType},#{regcode},#{phone},#{email})")
+    int createAccount(int userId, String username,UserTypeEnum userType,int regcode,String phone,String email);
 
     @Select("SELECT COUNT(*) AS user_amount FROM user_auth WHERE user_id LIKE #{ids}")
     int countAccountByDay(String ids);
