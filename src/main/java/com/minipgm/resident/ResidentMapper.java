@@ -75,6 +75,38 @@ public interface ResidentMapper {
             "FROM res_profile AS res,user_auth AS user, " +
             "(SELECT fam.fam_id,fam.fam_name,fam.fam_address,user.phone AS fam_phone,user.email AS fam_email " +
             "FROM fam_profile AS fam,user_auth AS user WHERE fam.fam_id = user.user_id) AS fam " +
+            "WHERE user.user_id = res.res_id AND fam.fam_id = res.family_member_id AND " +
+            "(res.res_id = #{resId} OR res.name = #{name} OR res.num_bed = #{numOfBed})")
+    List<Resident> searchResident(int resId,String name,int numOfBed);
+
+    @Results({
+            @Result(property = "resId", column = "res_id"),
+            @Result(property = "name", column = "res_name"),
+            @Result(property = "goverId", column = "gover_id"),
+            @Result(property = "sex", column = "res_sex"),
+            @Result(property = "dob", column = "dob"),
+            @Result(property = "numOfBed", column = "num_bed"),
+            @Result(property = "phone", column = "res_phone"),
+            @Result(property = "email", column = "res_email"),
+            @Result(property = "address", column = "res_address"),
+            @Result(property = "photoUrl", column = "photo_url"),
+            @Result(property = "moveInDate", column = "move_in_date"),
+            @Result(property = "moveOutDate", column = "move_out_date"),
+            @Result(property = "medicalHistory", column = "medical_history"),
+            @Result(property = "familyId", column = "fam_id"),
+            @Result(property = "famName", column = "fam_name"),
+            @Result(property = "famPhone", column = "fam_phone"),
+            @Result(property = "famAddress", column = "fam_address"),
+            @Result(property = "famEmail", column = "fam_email"),
+            @Result(property = "createDate", column = "create_date"),
+            @Result(property = "updateDate", column = "update_date")
+    })
+    @Select("SELECT res.res_id,res.name as res_name,res.sex as res_sex,res.dob,res.num_bed,res.gover_id," +
+            "res.address as res_address,res.photo_url,res.move_in_date,res.move_out_date,res.medical_history," +
+            "res.create_date,res.update_date,user.phone  as res_phone,user.email  as res_email,fam.* " +
+            "FROM res_profile AS res,user_auth AS user, " +
+            "(SELECT fam.fam_id,fam.fam_name,fam.fam_address,user.phone AS fam_phone,user.email AS fam_email " +
+            "FROM fam_profile AS fam,user_auth AS user WHERE fam.fam_id = user.user_id) AS fam " +
             "WHERE user.user_id = res.res_id AND fam.fam_id = res.family_member_id AND user.user_id=#{userId}")
     Resident getResidentById(int userId);
 

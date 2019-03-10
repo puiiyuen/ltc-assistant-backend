@@ -31,9 +31,7 @@ public class ResidentService {
     @Autowired
     private idGenerator idGenerator;
 
-    public List<ResidentBase> getResBaseInfo() {
-
-        List<Resident> resListObj = residentMapper.getRangeResidents(0, 20);
+    private List<ResidentBase> infoPack(List<Resident> resListObj){
         List<ResidentBase> resBaseListObj = new ArrayList<>();
 
         for (Resident resident : resListObj) {
@@ -41,6 +39,18 @@ public class ResidentService {
             resBaseListObj.add(resBaseObj);
         }
         return resBaseListObj;
+    }
+
+    public List<ResidentBase> getResBaseInfo() {
+        List<Resident> resListObj = residentMapper.getRangeResidents(0, 20);
+        return infoPack(resListObj);
+
+    }
+
+    public List<ResidentBase> searchResidents(int resId,String name,int numOfBed){
+        List<Resident> residentList = residentMapper.searchResident(resId,name,numOfBed);
+        return infoPack(residentList);
+
     }
 
     public Resident getResDetailById(int userId) {
@@ -67,25 +77,6 @@ public class ResidentService {
                     data.get("famName").toString(), data.get("famPhone").toString(), data.get("famEmail").toString(),
                     data.get("famAddress").toString(), data.get("medicalHistory").toString(),
                     Date.valueOf(data.get("moveInDate").toString()));
-//            if (residentMapper.existResident(newRes.getGoverId()) == null) {
-//                if (userMapper.createAccount(newRes.getResId(),newRes.getName(),
-//                        UserTypeEnum.RESIDENT,regCodeGenerator.newRegCode())==1){
-//                    if (userMapper.createAccount(famId,newRes.getEgName(),
-//                            UserTypeEnum.RESFAMILY,regCodeGenerator.newRegCode())==1){
-//                            residentMapper.createResident(newRes.getResId(),newRes.getName(),newRes.getSex(),
-//                                    newRes.getDob(),newRes.getNumOfBed(),newRes.getGoverId(),newRes.getAddress(),
-//                                    newRes.getEgName(),newRes.getEgPhone(),newRes.getFamilyId(),newRes.getMoveInDate(),
-//                                    newRes.getMedicalHistory());
-//                            residentMapper.createResidentFamily();
-//                    }else {
-//                        return operationStatus.FAILED;
-//                    }
-//                }else{
-//                    return operationStatus.FAILED;
-//                }
-//            } else {
-//                return operationStatus.ISEXIST;
-//            }
             if (residentMapper.existResident(newRes.getGoverId()) == null) {
                 userService.createAccount(newRes.getResId(), "住户" + newRes.getResId(),
                         UserTypeEnum.RESIDENT, resRegcode, newRes.getPhone(), newRes.getEmail());
@@ -106,7 +97,6 @@ public class ResidentService {
             return operationStatus.SERVERERROR;
         }
     }
-
 
     @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
     public int updatePhotoById(byte[] photo, String photoName, String goverId) {
@@ -130,4 +120,5 @@ public class ResidentService {
         }
 
     }
+
 }

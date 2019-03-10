@@ -87,4 +87,32 @@ public class ResidentController {
             return operationStatus.SERVERERROR;
         }
     }
+
+    @PostMapping("/search")
+    public List<ResidentBase> searchResidents(@RequestBody Map<String, Object> param, HttpSession session){
+        try {
+            if (session.getAttribute("userId") != null &&
+                    session.getAttribute("userType").toString().equals("ADMIN")) {
+                String searchInput = param.get("search").toString();
+                if (searchInput.equals("")){
+                    return null;
+                }
+                int resId,numOfBed;
+                String resName;
+                if (searchInput.matches("^[0-9]+$")){
+                    resId = Integer.parseInt(searchInput);
+                    numOfBed = Integer.parseInt(searchInput);
+                    return residentService.searchResidents(resId,"noname",numOfBed);
+                } else {
+                    resName = searchInput;
+                    return residentService.searchResidents(-1,resName,-1);
+                }
+            } else {
+                return null;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
