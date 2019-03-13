@@ -21,4 +21,8 @@ public class HealthService {
     public List<HealthDTO> getHealthReportList(){
         return healthMapper.getHealthReportList();
     }
+
+    public List<HealthDTO> getReportById(int resId){
+        return healthMapper.getReportById(resId);
+    }
 }

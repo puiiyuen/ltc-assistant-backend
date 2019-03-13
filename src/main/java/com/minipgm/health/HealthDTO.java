@@ -5,18 +5,19 @@ import com.minipgm.enums.SexEnum;
 import java.sql.Timestamp;
 import java.util.Date;
 
-public class HealthDTO extends Health{
+public class HealthDTO extends Health {
 
     private String name;
     private SexEnum sex;
     private Date dob;
     private int numOfBed;
+    private String medicalHistory;
 
-    public HealthDTO(){
+    public HealthDTO() {
         super();
     }
 
-    public HealthDTO(String name, SexEnum sex, Date dob,int numOfBed,
+    public HealthDTO(String name, SexEnum sex, Date dob, int numOfBed, String medicalHistory,
                      int resId, double height, double weight, int heartRate,
                      int bpSystolic, int bpDiastolic, double bloodGlucose,
                      double bloodLipids, double uricAcid, String suggestion,
@@ -27,6 +28,7 @@ public class HealthDTO extends Health{
         this.sex = sex;
         this.dob = dob;
         this.numOfBed = numOfBed;
+        this.medicalHistory = medicalHistory;
     }
 
     public String getName() {
@@ -59,5 +61,13 @@ public class HealthDTO extends Health{
 
     public void setNumOfBed(int numOfBed) {
         this.numOfBed = numOfBed;
+    }
+
+    public String getMedicalHistory() {
+        return medicalHistory;
+    }
+
+    public void setMedicalHistory(String medicalHistory) {
+        this.medicalHistory = medicalHistory;
     }
 }

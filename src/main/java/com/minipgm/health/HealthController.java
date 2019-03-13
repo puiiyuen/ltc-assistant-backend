@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/health")
@@ -30,6 +31,21 @@ public class HealthController {
                 return null;
             }
         } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping("/report-detail")
+    public List<HealthDTO> getReportDetailById(@RequestBody Map<String, Object> param, HttpSession session) {
+        try {
+            if (session.getAttribute("userId") != null &&
+                    session.getAttribute("userType").toString().equals("ADMIN")) {
+                return healthService.getReportById(Integer.parseInt(param.get("resId").toString()));
+            }else {
+                return null;
+            }
+        } catch (Exception e){
             e.printStackTrace();
             return null;
         }
