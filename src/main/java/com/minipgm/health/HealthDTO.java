@@ -1,3 +1,10 @@
+/**
+ * Health DTO
+ *
+ * @author Peiyuan
+ * 2019-03-10
+ */
+
 package com.minipgm.health;
 
 import com.minipgm.enums.SexEnum;

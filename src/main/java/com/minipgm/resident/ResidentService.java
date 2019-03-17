@@ -31,7 +31,7 @@ public class ResidentService {
     @Autowired
     private idGenerator idGenerator;
 
-    private List<ResidentBase> infoPack(List<Resident> resListObj){
+    private List<ResidentBase> infoPack(List<Resident> resListObj) {
         List<ResidentBase> resBaseListObj = new ArrayList<>();
 
         for (Resident resident : resListObj) {
@@ -47,8 +47,8 @@ public class ResidentService {
 
     }
 
-    public List<ResidentBase> searchResidents(int resId,String name,int numOfBed){
-        List<Resident> residentList = residentMapper.searchResident(resId,name,numOfBed);
+    public List<ResidentBase> searchResidents(int resId, String name, int numOfBed) {
+        List<Resident> residentList = residentMapper.searchResident(resId, name, numOfBed);
         return infoPack(residentList);
 
     }
@@ -57,7 +57,7 @@ public class ResidentService {
         return residentMapper.getResidentById(userId);
     }
 
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public int addResident(Map<String, Object> data) {
 
         try {
@@ -98,16 +98,20 @@ public class ResidentService {
         }
     }
 
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public int updatePhotoById(byte[] photo, String photoName, String goverId) {
         try {
             String UPLOAD_FOLDER = "/opt/photo/";
+//            development
+            String api = "http://localhost:8080";
+//            live
+//            String api = "";
             Path path = Paths.get(UPLOAD_FOLDER + photoName);
             if (!Files.isWritable(path)) {
                 Files.createDirectories(Paths.get(UPLOAD_FOLDER));
             }
             Files.write(path, photo);
-            String photoUrl = "http://localhost:8080/photo/" + photoName;
+            String photoUrl = api + "/photo/" + photoName;
             if (residentMapper.updatePhotoByGoverId(photoUrl, goverId) == 1) {
                 return operationStatus.SUCCESSFUL;
             } else {
