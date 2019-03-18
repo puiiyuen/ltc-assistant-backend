@@ -65,4 +65,13 @@ public interface BillMapper {
     @Select("SELECT MAX(bill_id) FROM bill WHERE bill_id LIKE #{todayId}")
     String maxBillId(String todayId);
 
+    @Insert("INSERT INTO bill (res_id,bill_id,item,amount) VALUES (#{resId},#{billId},#{item},#{amount})")
+    int addBillRecord(int resId,String billId,String item,double amount);
+
+    @Update("Update bill SET item=#{item},amount=#{amount},record_date=CURRENT_TIMESTAMP" +
+            " WHERE bill_id=#{billId} AND res_id=#{resId}")
+    int modifyBillRecord(int resId,String billId,String item,double amount);
+
+    @Delete("DELETE FROM bill WHERE res_id=#{resId} AND bill_id=#{billId}")
+    int deleteBillRecord(int resId,String billId);
 }

@@ -7,6 +7,7 @@
 
 package com.minipgm.transaction.payment;
 
+import com.minipgm.enums.PaymentPlatformEnum;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -26,5 +27,16 @@ public interface PaymentMapper {
 
     @Select("SELECT MAX(payment_id) FROM payment WHERE payment_id LIKE #{todayId}")
     String maxPaymentId(String todayId);
+
+    @Insert("INSERT INTO payment (res_id,payment_id,platform,paid) " +
+            "VALUES(#{resId},#{paymentId},#{platform},#{paid})")
+    int addPaymentRecord(int resId, String paymentId, PaymentPlatformEnum platform,double paid);
+
+    @Update("UPDATE payment SET paid=#{paid},record_date=CURRENT_TIMESTAMP" +
+            " WHERE res_id=#{resId} AND payment_id=#{paymentId}")
+    int modifyPaymentRecord(int resId,String paymentId,double paid);
+
+    @Delete("DELETE FROM payment WHERE res_id=#{resId} AND payment_id=#{paymentId}")
+    int deletePaymentRecord(int resId,String paymentId);
 
 }

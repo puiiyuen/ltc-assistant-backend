@@ -76,5 +76,4 @@ public interface HealthMapper {
     @Select("SELECT MAX(report_id) FROM health_report WHERE report_id LIKE #{todayId}")
     String maxReportId(String todayId);
 
-
 }
