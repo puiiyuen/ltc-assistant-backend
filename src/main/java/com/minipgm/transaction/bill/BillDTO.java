@@ -22,8 +22,9 @@ public class BillDTO extends Bill{
         this.numOfBed = numOfBed;
     }
 
-    public BillDTO(int resId, String item, double amount, Timestamp recordDate, String name, int numOfBed) {
-        super(resId, item, amount, recordDate);
+    public BillDTO(int resId, String billId, String item, double amount,
+                   Timestamp recordDate, String name, int numOfBed) {
+        super(resId, billId, item, amount, recordDate);
         this.name = name;
         this.numOfBed = numOfBed;
     }

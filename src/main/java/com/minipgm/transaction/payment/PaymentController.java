@@ -21,7 +21,7 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    @PostMapping("/payment-detail")
+    @PostMapping("/detail")
     public List<Payment> getPaymentDetail(@RequestBody Map<String, Object> param, HttpSession session) {
         try {
             if (sessionCheck.isOnline(session, "ADMIN")) {

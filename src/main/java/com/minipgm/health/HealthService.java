@@ -38,7 +38,7 @@ public class HealthService {
     public int addHealthRecord(Map<String, Object> data) {
         try {
             Health healthReport = new Health(Integer.parseInt(data.get("resId").toString()),
-                    Double.parseDouble(data.get("height").toString()),
+                    data.get("reportId").toString(), Double.parseDouble(data.get("height").toString()),
                     Double.parseDouble(data.get("weight").toString()),
                     Integer.parseInt(data.get("heartRate").toString()),
                     Integer.parseInt(data.get("bpSystolic").toString()),

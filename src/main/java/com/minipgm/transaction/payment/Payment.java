@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 
 public class Payment {
     private int resId;
+    private String paymentId;
     private double paid;
     private PaymentPlatformEnum platform;
     private Timestamp recordDate;
@@ -21,8 +22,9 @@ public class Payment {
         super();
     }
 
-    public Payment(int resId, double paid, PaymentPlatformEnum platform, Timestamp recordDate) {
+    public Payment(int resId, String paymentId, double paid, PaymentPlatformEnum platform, Timestamp recordDate) {
         this.resId = resId;
+        this.paymentId = paymentId;
         this.paid = paid;
         this.platform = platform;
         this.recordDate = recordDate;
@@ -58,5 +60,13 @@ public class Payment {
 
     public void setRecordDate(Timestamp recordDate) {
         this.recordDate = recordDate;
+    }
+
+    public String getPaymentId() {
+        return paymentId;
+    }
+
+    public void setPaymentId(String paymentId) {
+        this.paymentId = paymentId;
     }
 }

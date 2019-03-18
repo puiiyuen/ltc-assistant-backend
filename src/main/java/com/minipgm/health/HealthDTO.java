@@ -24,12 +24,11 @@ public class HealthDTO extends Health {
         super();
     }
 
-    public HealthDTO(String name, SexEnum sex, Date dob, int numOfBed, String medicalHistory,
-                     int resId, double height, double weight, int heartRate,
-                     int bpSystolic, int bpDiastolic, double bloodGlucose,
-                     double bloodLipids, double uricAcid, String suggestion,
-                     Timestamp recordDate) {
-        super(resId, height, weight, heartRate, bpSystolic, bpDiastolic,
+    public HealthDTO(int resId, String reportId, double height, double weight, int heartRate,
+                     int bpSystolic, int bpDiastolic, double bloodGlucose, double bloodLipids,
+                     double uricAcid, String suggestion, Timestamp recordDate, String name,
+                     SexEnum sex, Date dob, int numOfBed, String medicalHistory) {
+        super(resId, reportId, height, weight, heartRate, bpSystolic, bpDiastolic,
                 bloodGlucose, bloodLipids, uricAcid, suggestion, recordDate);
         this.name = name;
         this.sex = sex;

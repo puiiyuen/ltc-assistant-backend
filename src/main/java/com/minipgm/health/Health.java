@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 public class Health {
 
     private int resId;
+    private String reportId;
     private double height;
     private double weight;
     private int heartRate;
@@ -27,11 +28,12 @@ public class Health {
         super();
     }
 
-    public Health(int resId, double height, double weight,
+    public Health(int resId, String reportId, double height, double weight,
                   int heartRate, int bpSystolic, int bpDiastolic,
                   double bloodGlucose, double bloodLipids, double uricAcid,
                   String suggestion, Timestamp recordDate) {
         this.resId = resId;
+        this.reportId = reportId;
         this.height = height;
         this.weight = weight;
         this.heartRate = heartRate;
@@ -130,5 +132,13 @@ public class Health {
 
     public void setRecordDate(Timestamp recordDate) {
         this.recordDate = recordDate;
+    }
+
+    public String getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(String reportId) {
+        this.reportId = reportId;
     }
 }

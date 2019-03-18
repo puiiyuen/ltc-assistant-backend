@@ -36,7 +36,7 @@ public class BillController {
         }
     }
 
-    @PostMapping("/bill-detail")
+    @PostMapping("/detail")
     public List<BillDTO> getBillDetail(@RequestBody Map<String, Object> param, HttpSession session) {
         try {
             if (sessionCheck.isOnline(session, "ADMIN")) {

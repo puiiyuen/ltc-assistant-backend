@@ -34,6 +34,7 @@ public interface HealthMapper {
             @Result(property = "dob",column = "dob"),
             @Result(property = "numOfBed",column = "num_bed"),
             @Result(property = "resId",column = "id"),
+            @Result(property = "reportId",column = "report_id"),
             @Result(property = "medicalHistory",column = "medical_history"),
             @Result(property = "height",column = "height"),
             @Result(property = "weight",column = "weight"),
@@ -71,6 +72,9 @@ public interface HealthMapper {
             "#{bpDiastolic},#{bloodGlucose},#{bloodLipids},#{uricAcid},#{suggestion})")
     int addHealthRecord(int resId,double height,double weight,int heartRate,int bpSystolic,int bpDiastolic,
                             double bloodGlucose,double bloodLipids,double uricAcid,String suggestion);
+
+    @Select("SELECT MAX(report_id) FROM health_report WHERE report_id LIKE #{todayId}")
+    String maxReportId(String todayId);
 
 
 }

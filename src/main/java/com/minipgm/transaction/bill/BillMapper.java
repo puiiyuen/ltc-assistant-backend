@@ -34,19 +34,6 @@ public interface BillMapper {
             @Result(property = "name",column = "name"),
             @Result(property = "numOfBed",column = "num_bed"),
             @Result(property = "resId",column = "res_id"),
-            @Result(property = "item",column = "item"),
-            @Result(property = "amount",column = "amount"),
-            @Result(property = "recordDate",column = "record_date")
-    })
-    @Select("SELECT res.res_id,res.name,res.num_bed,bi.item,bi.amount,bi.record_date " +
-            "FROM res_profile res LEFT OUTER JOIN bill bi ON res.res_id=bi.res_id " +
-            "WHERE res.res_id = #{resId} ORDER BY bi.record_date DESC")
-    List<BillDTO> getBillDetail(int resId);
-
-    @Results({
-            @Result(property = "name",column = "name"),
-            @Result(property = "numOfBed",column = "num_bed"),
-            @Result(property = "resId",column = "res_id"),
             @Result(property = "totalBill",column = "total_bill"),
             @Result(property = "totalPaid",column = "total_paid"),
             @Result(property = "latestBillDate",column = "latest_bill_date")
@@ -59,5 +46,23 @@ public interface BillMapper {
             "WHERE res.res_id=#{resId} OR res.name=#{name} OR res.num_bed=#{numOfBed} "+
             "ORDER BY bi.latest_bill_date DESC LIMIT 0,20")
     List<BillList> searchBills(int resId,String name,int numOfBed);
+
+    @Results({
+            @Result(property = "name",column = "name"),
+            @Result(property = "numOfBed",column = "num_bed"),
+            @Result(property = "resId",column = "res_id"),
+            @Result(property = "billId",column = "bill_id"),
+            @Result(property = "item",column = "item"),
+            @Result(property = "amount",column = "amount"),
+            @Result(property = "recordDate",column = "record_date")
+    })
+    @Select("SELECT res.res_id,res.name,res.num_bed,bi.bill_id,bi.item,bi.amount,bi.record_date " +
+            "FROM res_profile res LEFT OUTER JOIN bill bi ON res.res_id=bi.res_id " +
+            "WHERE res.res_id = #{resId} ORDER BY bi.record_date DESC")
+    List<BillDTO> getBillDetail(int resId);
+
+
+    @Select("SELECT MAX(bill_id) FROM bill WHERE bill_id LIKE #{todayId}")
+    String maxBillId(String todayId);
 
 }

@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 
 public class Bill {
     private int resId;
+    private String billId;
     private String item;
     private double amount;
     private Timestamp recordDate;
@@ -19,8 +20,9 @@ public class Bill {
         super();
     }
 
-    public Bill(int resId, String item, double amount, Timestamp recordDate) {
+    public Bill(int resId, String billId, String item, double amount, Timestamp recordDate) {
         this.resId = resId;
+        this.billId = billId;
         this.item = item;
         this.amount = amount;
         this.recordDate = recordDate;
@@ -56,5 +58,13 @@ public class Bill {
 
     public void setRecordDate(Timestamp recordDate) {
         this.recordDate = recordDate;
+    }
+
+    public String getBillId() {
+        return billId;
+    }
+
+    public void setBillId(String billId) {
+        this.billId = billId;
     }
 }
