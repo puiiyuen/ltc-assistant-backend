@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.*;
 
-import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class HealthService {
@@ -35,23 +33,45 @@ public class HealthService {
     }
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public int addHealthRecord(Map<String, Object> data) {
+    public int addHealthRecord(Health healthReport) {
         try {
-            Health healthReport = new Health(Integer.parseInt(data.get("resId").toString()),
-                    data.get("reportId").toString(), Double.parseDouble(data.get("height").toString()),
-                    Double.parseDouble(data.get("weight").toString()),
-                    Integer.parseInt(data.get("heartRate").toString()),
-                    Integer.parseInt(data.get("bpSystolic").toString()),
-                    Integer.parseInt(data.get("bpDiastolic").toString()),
-                    Double.parseDouble(data.get("bloodGlucose").toString()),
-                    Double.parseDouble(data.get("bloodLipids").toString()),
-                    Double.parseDouble(data.get("uricAcid").toString()),
-                    data.get("suggestion").toString(), Timestamp.valueOf("2099-12-31 00:00:00"));
-            healthMapper.addHealthRecord(healthReport.getResId(),healthReport.getHeight(),healthReport.getWeight(),
-                    healthReport.getHeartRate(),healthReport.getBpSystolic(),healthReport.getBpDiastolic(),
-                    healthReport.getBloodGlucose(),healthReport.getBloodLipids(),healthReport.getUricAcid(),
+            healthMapper.addHealthRecord(healthReport.getResId(), healthReport.getReportId(),
+                    healthReport.getHeight(), healthReport.getWeight(),
+                    healthReport.getHeartRate(), healthReport.getBpSystolic(), healthReport.getBpDiastolic(),
+                    healthReport.getBloodGlucose(), healthReport.getBloodLipids(), healthReport.getUricAcid(),
                     healthReport.getSuggestion());
             return operationStatus.SUCCESSFUL;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public int modifyHealthRecord(Health healthReport) {
+        try {
+            if (healthMapper.modifyHealthRecord(healthReport.getResId(), healthReport.getReportId(),
+                    healthReport.getHeight(), healthReport.getWeight(), healthReport.getHeartRate(),
+                    healthReport.getBpSystolic(), healthReport.getBpDiastolic(), healthReport.getBloodGlucose(),
+                    healthReport.getBloodLipids(), healthReport.getUricAcid(), healthReport.getSuggestion()) == 1) {
+                return operationStatus.SUCCESSFUL;
+            } else {
+                return operationStatus.FAILED;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public int deleteHealthRecord(int resId, String reportId) {
+        try {
+            if (healthMapper.deleteHealthRecord(resId, reportId) == 1) {
+                return operationStatus.SUCCESSFUL;
+            } else {
+                return operationStatus.FAILED;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return operationStatus.SERVERERROR;

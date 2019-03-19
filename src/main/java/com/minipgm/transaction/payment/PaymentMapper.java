@@ -16,11 +16,11 @@ import java.util.List;
 public interface PaymentMapper {
 
     @Results({
-            @Result(property = "resId",column = "res_id"),
-            @Result(property = "paymentId",column = "payment_id"),
-            @Result(property = "paid",column = "paid"),
-            @Result(property = "platform",column = "platform"),
-            @Result(property = "recordDate",column = "record_date")
+            @Result(property = "resId", column = "res_id"),
+            @Result(property = "paymentId", column = "payment_id"),
+            @Result(property = "paid", column = "paid"),
+            @Result(property = "platform", column = "platform"),
+            @Result(property = "recordDate", column = "record_date")
     })
     @Select("SELECT * FROM payment WHERE res_id =#{resId} ORDER BY record_date DESC ")
     List<Payment> getPaymentDetail(int resId);
@@ -30,13 +30,13 @@ public interface PaymentMapper {
 
     @Insert("INSERT INTO payment (res_id,payment_id,platform,paid) " +
             "VALUES(#{resId},#{paymentId},#{platform},#{paid})")
-    int addPaymentRecord(int resId, String paymentId, PaymentPlatformEnum platform,double paid);
+    int addPaymentRecord(int resId, String paymentId, PaymentPlatformEnum platform, double paid);
 
     @Update("UPDATE payment SET paid=#{paid},record_date=CURRENT_TIMESTAMP" +
             " WHERE res_id=#{resId} AND payment_id=#{paymentId}")
-    int modifyPaymentRecord(int resId,String paymentId,double paid);
+    int modifyPaymentRecord(int resId, String paymentId, double paid);
 
     @Delete("DELETE FROM payment WHERE res_id=#{resId} AND payment_id=#{paymentId}")
-    int deletePaymentRecord(int resId,String paymentId);
+    int deletePaymentRecord(int resId, String paymentId);
 
 }
