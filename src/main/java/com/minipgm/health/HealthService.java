@@ -11,6 +11,7 @@ import com.minipgm.util.operationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.*;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class HealthService {
             return operationStatus.SUCCESSFUL;
         } catch (Exception e) {
             e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
             return operationStatus.SERVERERROR;
         }
     }
@@ -56,10 +58,12 @@ public class HealthService {
                     healthReport.getBloodLipids(), healthReport.getUricAcid(), healthReport.getSuggestion()) == 1) {
                 return operationStatus.SUCCESSFUL;
             } else {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
                 return operationStatus.FAILED;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
             return operationStatus.SERVERERROR;
         }
     }
@@ -70,10 +74,12 @@ public class HealthService {
             if (healthMapper.deleteHealthRecord(resId, reportId) == 1) {
                 return operationStatus.SUCCESSFUL;
             } else {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
                 return operationStatus.FAILED;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
             return operationStatus.SERVERERROR;
         }
     }

@@ -39,4 +39,7 @@ public interface PaymentMapper {
     @Delete("DELETE FROM payment WHERE res_id=#{resId} AND payment_id=#{paymentId}")
     int deletePaymentRecord(int resId, String paymentId);
 
+    @Delete("DELETE FROM payment WHERE res_id=#{resId}")
+    int deletePaymentRecordById(int resId);
+
 }

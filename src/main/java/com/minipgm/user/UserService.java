@@ -30,7 +30,7 @@ public class UserService {
      */
 
     public int login(int userId, String password) {
-        if (userMapper.isActivated(userId, "activated") != null) {
+        if (userMapper.isActivated(userId) != null) {
             String encryptedPassword = shaEncryption.passwordEncryption(password);
             if (userMapper.existUser(userId, encryptedPassword, UserTypeEnum.ADMIN) != null) {
                 return operationStatus.SUCCESSFUL;
@@ -77,8 +77,41 @@ public class UserService {
             return operationStatus.SUCCESSFUL;
         } catch (Exception e) {
             e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
             return operationStatus.SERVERERROR;
         }
 
+    }
+
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public int modifyContact(int userId,String phone,String email){
+        try {
+            if (userMapper.modifyContact(userId,phone,email) == 1){
+                return operationStatus.SUCCESSFUL;
+            } else {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
+                return operationStatus.FAILED;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
+            return operationStatus.SERVERERROR;
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public int destroyAccount(int userId){
+        try {
+            if (userMapper.destroyAccount(userId) == 1){
+                return operationStatus.SUCCESSFUL;
+            } else {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                return operationStatus.FAILED;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return operationStatus.SERVERERROR;
+        }
     }
 }

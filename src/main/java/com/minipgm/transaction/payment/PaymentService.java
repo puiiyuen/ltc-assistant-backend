@@ -11,6 +11,7 @@ import com.minipgm.util.operationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.*;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class PaymentService {
             return operationStatus.SUCCESSFUL;
         } catch (Exception e){
             e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
             return operationStatus.SERVERERROR;
         }
     }
@@ -42,10 +44,12 @@ public class PaymentService {
             if (paymentMapper.modifyPaymentRecord(payment.getResId(),payment.getPaymentId(),payment.getPaid()) == 1){
                 return operationStatus.SUCCESSFUL;
             } else {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
                 return operationStatus.FAILED;
             }
         } catch (Exception e){
             e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
             return operationStatus.SERVERERROR;
         }
     }
@@ -56,10 +60,12 @@ public class PaymentService {
             if (paymentMapper.deletePaymentRecord(resId,paymentId) == 1 ){
                 return operationStatus.SUCCESSFUL;
             } else {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
                 return operationStatus.FAILED;
             }
         }catch (Exception e){
             e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
             return operationStatus.SERVERERROR;
         }
     }

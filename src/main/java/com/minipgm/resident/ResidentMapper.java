@@ -43,7 +43,7 @@ public interface ResidentMapper {
             "FROM res_profile AS res,user_auth AS user, " +
             "(SELECT fam.fam_id,fam.fam_name,fam.fam_address,user.phone AS fam_phone,user.email AS fam_email " +
             "FROM fam_profile AS fam,user_auth AS user WHERE fam.fam_id = user.user_id) AS fam " +
-            "WHERE user.user_id = res.res_id AND fam.fam_id = res.family_member_id " +
+            "WHERE user.user_id = res.res_id AND fam.fam_id = res.family_member_id AND account_status!='destroy'" +
             "LIMIT #{low},#{high}")
     List<Resident> getRangeResidents(int low, int high);
 
@@ -75,9 +75,9 @@ public interface ResidentMapper {
             "FROM res_profile AS res,user_auth AS user, " +
             "(SELECT fam.fam_id,fam.fam_name,fam.fam_address,user.phone AS fam_phone,user.email AS fam_email " +
             "FROM fam_profile AS fam,user_auth AS user WHERE fam.fam_id = user.user_id) AS fam " +
-            "WHERE user.user_id = res.res_id AND fam.fam_id = res.family_member_id AND " +
+            "WHERE user.user_id = res.res_id AND fam.fam_id = res.family_member_id AND account_status!='destroy' AND " +
             "(res.res_id = #{resId} OR res.name = #{name} OR res.num_bed = #{numOfBed})")
-    List<Resident> searchResident(int resId,String name,int numOfBed);
+    List<Resident> searchResident(int resId, String name, int numOfBed);
 
     @Results({
             @Result(property = "resId", column = "res_id"),
@@ -107,7 +107,8 @@ public interface ResidentMapper {
             "FROM res_profile AS res,user_auth AS user, " +
             "(SELECT fam.fam_id,fam.fam_name,fam.fam_address,user.phone AS fam_phone,user.email AS fam_email " +
             "FROM fam_profile AS fam,user_auth AS user WHERE fam.fam_id = user.user_id) AS fam " +
-            "WHERE user.user_id = res.res_id AND fam.fam_id = res.family_member_id AND user.user_id=#{userId}")
+            "WHERE user.user_id = res.res_id AND fam.fam_id = res.family_member_id " +
+            "AND user.user_id=#{userId} AND account_status!='destroy'")
     Resident getResidentById(int userId);
 
     @Select("SELECT name FROM res_profile WHERE gover_id=#{goverId}")
@@ -121,10 +122,29 @@ public interface ResidentMapper {
                        int numOfBed, String goverId, String address, int famId,
                        Date moveInDate, String medicalHistory);
 
-    @Update("UPDATE res_profile SET photo_url=#{photoUrl} WHERE gover_id=#{goverId}")
+    @Update("UPDATE res_profile SET photo_url=#{photoUrl},update_date=CURRENT_TIMESTAMP" +
+            " WHERE gover_id=#{goverId}")
     int updatePhotoByGoverId(String photoUrl, String goverId);
 
     @Insert("INSERT INTO fam_profile (fam_id,fam_name,fam_address) VALUES (#{famId},#{famName},#{famAddress})")
-    int createResidentFamily(int famId,String famName,String famAddress);
+    int createResidentFamily(int famId, String famName, String famAddress);
+
+    @Update("UPDATE res_profile SET name=#{name},sex=#{sex},dob=#{dob},num_bed=#{numOfBed}," +
+            "gover_id=#{goverId},address=#{address},family_member_id=#{famId},move_in_date=#{moveInDate}," +
+            "medical_history=#{medicalHistory},update_date=CURRENT_TIMESTAMP WHERE res_id=#{resId}")
+    int modifyResident(int resId, String name, SexEnum sex, Date dob,
+                       int numOfBed, String goverId, String address, int famId,
+                       Date moveInDate, String medicalHistory);
+
+    @Update("UPDATE fam_profile SET fam_name=#{famName},fam_address=#{famAddress},update_date=CURRENT_TIMESTAMP " +
+            "WHERE fam_id=#{famId}")
+    int modifyResidentFamily(int famId,String famName,String famAddress);
+
+    @Delete("DELETE FROM res_profile WHERE res_id=#{resId}")
+    int deleteResident(int resId);
+
+    @Delete("DELETE FROM fam_profile WHERE fam_id=#{famId}")
+    int deleteResidentFamily(int famId);
+
 
 }

@@ -7,12 +7,17 @@
 
 package com.minipgm.resident;
 
+import com.minipgm.enums.SexEnum;
+import com.minipgm.util.idGenerator;
 import com.minipgm.util.operationStatus;
+import com.minipgm.util.regCodeGenerator;
+import com.minipgm.util.sessionCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
+import java.sql.Date;
 import java.util.*;
 
 @RestController
@@ -21,6 +26,10 @@ public class ResidentController {
 
     @Autowired
     private ResidentService residentService;
+    @Autowired
+    private regCodeGenerator regCodeGenerator;
+    @Autowired
+    private idGenerator idGenerator;
 
     @GetMapping("/baseInfo")
     public List<ResidentBase> getResBaseInfo(HttpSession session) {
@@ -30,7 +39,7 @@ public class ResidentController {
             } else {
                 return null;
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -56,9 +65,22 @@ public class ResidentController {
     @PostMapping("/add-resident")
     public int addResident(@RequestBody Map<String, Object> param, HttpSession session) {
         try {
-            if (session.getAttribute("userId") != null &&
-                    session.getAttribute("userType").toString().equals("ADMIN")) {
-                return residentService.addResident(param);
+            if (sessionCheck.isOnline(session, "ADMIN")) {
+                int resId = idGenerator.newId(1);
+                int famId = idGenerator.newId(2);
+                int resRegcode = regCodeGenerator.newRegCode();
+                int famRegcode = regCodeGenerator.newRegCode();
+                if (resId == -1 || famId == -1 || resRegcode == -1 || famRegcode == -1) {
+                    return operationStatus.FAILED;
+                }
+                Resident newRes = new Resident(resId, famId, param.get("name").toString(), param.get("goverId").toString(),
+                        param.get("phone").toString(), param.get("email").toString(),
+                        Integer.parseInt(param.get("bed").toString()), SexEnum.valueOf(param.get("sex").toString()),
+                        java.sql.Date.valueOf(param.get("dob").toString()), param.get("address").toString(),
+                        param.get("famName").toString(), param.get("famPhone").toString(), param.get("famEmail").toString(),
+                        param.get("famAddress").toString(), param.get("medicalHistory").toString(),
+                        Date.valueOf(param.get("moveInDate").toString()));
+                return residentService.addResident(newRes,resRegcode,famRegcode);
             } else {
                 return operationStatus.FAILED;
             }
@@ -73,8 +95,7 @@ public class ResidentController {
                               @RequestParam("goverId") String goverId,
                               HttpSession session) {
         try {
-            if (session.getAttribute("userId") != null && session.getAttribute("userType").toString().equals("ADMIN")) {
-
+            if (sessionCheck.isOnline(session, "ADMIN")) {
                 byte[] bytes = photo.getBytes();
                 String photoSuffix = photo.getOriginalFilename().substring(photo.getOriginalFilename().lastIndexOf('.'));
                 String photoName = goverId + photoSuffix;
@@ -88,29 +109,66 @@ public class ResidentController {
         }
     }
 
+    @PostMapping("/modify")
+    public int modifyResident(@RequestBody Map<String,Object> param,HttpSession session){
+        try {
+            if (sessionCheck.isOnline(session,"ADMIN")){
+                Resident resident= new Resident(Integer.parseInt(param.get("resId").toString()),
+                        Integer.parseInt(param.get("famId").toString()),param.get("name").toString(),
+                        param.get("goverId").toString(),param.get("phone").toString(),param.get("email").toString(),
+                        Integer.parseInt(param.get("bed").toString()),SexEnum.valueOf(param.get("sex").toString()),
+                        Date.valueOf(param.get("dob").toString()),param.get("address").toString(),
+                         param.get("famName").toString(),param.get("famPhone").toString(),
+                        param.get("famEmail").toString(),param.get("famAddress").toString(),
+                        param.get("medicalHistory").toString(),Date.valueOf(param.get("moveInDate").toString()));
+                return residentService.modifyResident(resident);
+            } else {
+                return operationStatus.FAILED;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
+    }
+
+    @PostMapping("/destroy")
+    public Object destroyResident(@RequestBody Map<String,Object> param, HttpSession session){
+        try{
+            if (sessionCheck.isOnline(session,"ADMIN")){
+                return residentService.destroyResident(Integer.parseInt(param.get("resId").toString()),
+                        Integer.parseInt(param.get("famId").toString()));
+            } else {
+                return operationStatus.FAILED;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
+    }
+
     @PostMapping("/search")
-    public List<ResidentBase> searchResidents(@RequestBody Map<String, Object> param, HttpSession session){
+    public List<ResidentBase> searchResidents(@RequestBody Map<String, Object> param, HttpSession session) {
         try {
             if (session.getAttribute("userId") != null &&
                     session.getAttribute("userType").toString().equals("ADMIN")) {
                 String searchInput = param.get("search").toString();
-                if (searchInput.equals("")){
+                if (searchInput.equals("")) {
                     return null;
                 }
-                int resId,numOfBed;
+                int resId, numOfBed;
                 String resName;
-                if (searchInput.matches("^[0-9]+$")){
+                if (searchInput.matches("^[0-9]+$")) {
                     resId = Integer.parseInt(searchInput);
                     numOfBed = Integer.parseInt(searchInput);
-                    return residentService.searchResidents(resId,"noname",numOfBed);
+                    return residentService.searchResidents(resId, "noname", numOfBed);
                 } else {
                     resName = searchInput;
-                    return residentService.searchResidents(-1,resName,-1);
+                    return residentService.searchResidents(-1, resName, -1);
                 }
             } else {
                 return null;
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

@@ -8,6 +8,9 @@
 package com.minipgm.resident;
 
 import com.minipgm.enums.*;
+import com.minipgm.transaction.bill.BillList;
+import com.minipgm.transaction.bill.BillMapper;
+import com.minipgm.transaction.payment.PaymentMapper;
 import com.minipgm.user.UserService;
 import com.minipgm.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +19,6 @@ import org.springframework.transaction.annotation.*;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.nio.file.*;
-import java.sql.Date;
 import java.util.*;
 
 @Service
@@ -27,9 +29,10 @@ public class ResidentService {
     @Autowired
     private UserService userService;
     @Autowired
-    private regCodeGenerator regCodeGenerator;
+    private BillMapper billMapper;
     @Autowired
-    private idGenerator idGenerator;
+    private PaymentMapper paymentMapper;
+
 
     private List<ResidentBase> infoPack(List<Resident> resListObj) {
         List<ResidentBase> resBaseListObj = new ArrayList<>();
@@ -58,25 +61,8 @@ public class ResidentService {
     }
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public int addResident(Map<String, Object> data) {
-
+    public int addResident(Resident newRes, int resRegcode, int famRegcode) {
         try {
-            int resId = idGenerator.newId(1);
-            int famId = idGenerator.newId(2);
-            int resRegcode = regCodeGenerator.newRegCode();
-            int famRegcode = regCodeGenerator.newRegCode();
-
-            if (resId == -1 || famId == -1 || resRegcode == -1 || famRegcode == -1) {
-                return operationStatus.FAILED;
-            }
-
-            Resident newRes = new Resident(resId, famId, data.get("name").toString(), data.get("goverId").toString(),
-                    data.get("phone").toString(), data.get("email").toString(),
-                    Integer.parseInt(data.get("bed").toString()), SexEnum.valueOf(data.get("sex").toString()),
-                    Date.valueOf(data.get("dob").toString()), data.get("address").toString(),
-                    data.get("famName").toString(), data.get("famPhone").toString(), data.get("famEmail").toString(),
-                    data.get("famAddress").toString(), data.get("medicalHistory").toString(),
-                    Date.valueOf(data.get("moveInDate").toString()));
             if (residentMapper.existResident(newRes.getGoverId()) == null) {
                 userService.createAccount(newRes.getResId(), "住户" + newRes.getResId(),
                         UserTypeEnum.RESIDENT, resRegcode, newRes.getPhone(), newRes.getEmail());
@@ -123,6 +109,53 @@ public class ResidentService {
             return operationStatus.SERVERERROR;
         }
 
+    }
+
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public int modifyResident(Resident resident) {
+        try {
+            if (residentMapper.modifyResident(resident.getResId(), resident.getName(), resident.getSex(),
+                    resident.getDob(), resident.getNumOfBed(), resident.getGoverId(), resident.getAddress(),
+                    resident.getFamilyId(), resident.getMoveInDate(), resident.getMedicalHistory()) == 1 &&
+                    residentMapper.modifyResidentFamily(resident.getFamilyId(), resident.getFamName()
+                            , resident.getFamAddress()) == 1 && userService.modifyContact(resident.getResId(),
+                    resident.getPhone(), resident.getEmail()) == operationStatus.SUCCESSFUL &&
+                    userService.modifyContact(resident.getFamilyId(), resident.getFamPhone(),
+                            resident.getFamEmail()) == operationStatus.SUCCESSFUL) {
+                return operationStatus.SUCCESSFUL;
+            } else {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
+                return operationStatus.FAILED;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
+            return operationStatus.SERVERERROR;
+        }
+
+    }
+
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public int destroyResident(int resId, int famId) {
+        try {
+            List<BillList> billCheck = billMapper.searchBills(resId, "noname", -1);
+            double balance = billCheck.get(0).getTotalBill() - billCheck.get(0).getTotalPaid();
+            if (balance == 0) {
+                residentMapper.deleteResidentFamily(famId);
+                residentMapper.deleteResident(resId);
+                billMapper.deleteBillRecordById(resId);
+                paymentMapper.deletePaymentRecordById(resId);
+                userService.destroyAccount(famId);
+                userService.destroyAccount(resId);
+                return operationStatus.SUCCESSFUL;
+            } else {
+                return operationStatus.BILL;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
+            return operationStatus.SERVERERROR;
+        }
     }
 
 }

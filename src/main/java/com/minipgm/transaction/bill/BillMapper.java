@@ -74,4 +74,7 @@ public interface BillMapper {
 
     @Delete("DELETE FROM bill WHERE res_id=#{resId} AND bill_id=#{billId}")
     int deleteBillRecord(int resId,String billId);
+
+    @Delete("DELETE FROM bill WHERE res_id=#{resId}")
+    int deleteBillRecordById(int resId);
 }
