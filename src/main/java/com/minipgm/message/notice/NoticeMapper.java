@@ -21,8 +21,20 @@ public interface NoticeMapper {
             @Result(property = "createDate", column = "create_date"),
             @Result(property = "updateDate", column = "update_date")
     })
-    @Select("SELECT notice_id,notice_title,create_date,update_date FROM notice WHERE notice_status=#{status}")
+    @Select("SELECT notice_id,notice_title,create_date,update_date FROM notice WHERE notice_status=#{status} " +
+            "ORDER BY create_date DESC")
     List<NoticeToList> getNoticeList(int status);
+
+    @Results({
+            @Result(property = "noticeId", column = "notice_id"),
+            @Result(property = "noticeTitle", column = "notice_title"),
+            @Result(property = "noticeContent", column = "notice_content"),
+            @Result(property = "createDate", column = "create_date"),
+            @Result(property = "updateDate", column = "update_date")
+    })
+    @Select("SELECT notice_id,notice_title,notice_content,create_date,update_date FROM notice " +
+            "WHERE notice_id=#{noticeId}")
+    Notice getNoticeDetail(String noticeId);
 
     @Insert("INSERT INTO notice (user_id,notice_id,notice_title,notice_content,notice_status) " +
             "VALUES (#{userId},#{noticeId},#{noticeTitle},#{noticeContent},#{noticeStatus})")

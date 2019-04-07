@@ -57,6 +57,20 @@ public class NoticeController {
         }
     }
 
+    @PostMapping("/detail")
+    public Object getNoticeDetail(@RequestBody Map<String,Object> param, HttpSession session) {
+        try {
+            if (sessionCheck.isOnline(session,"ADMIN")){
+                return noticeService.getNoticeDetail(param.get("noticeId").toString());
+            } else {
+                return operationStatus.FAILED;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
+    }
+
     @PostMapping("/new")
     public Object addNewNotice(@RequestBody Map<String, Object> param, HttpSession session) {
         try {
@@ -102,7 +116,7 @@ public class NoticeController {
     public int modifyNotice(@RequestBody Map<String, Object> param, HttpSession session) {
         try {
             if (sessionCheck.isOnline(session, "ADMIN")) {
-                Notice modifyNotice = new Notice(Integer.parseInt(param.get("userId").toString()),
+                Notice modifyNotice = new Notice(Integer.parseInt(session.getAttribute("userId").toString()),
                         param.get("noticeId").toString(), param.get("noticeTitle").toString(),
                         param.get("noticeContent").toString(), 0,
                         Timestamp.valueOf("2099-12-31 00:00:00"), Timestamp.valueOf("2099-12-31 00:00:00"));

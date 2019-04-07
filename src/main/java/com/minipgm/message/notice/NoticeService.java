@@ -41,6 +41,15 @@ public class NoticeService {
         }
     }
 
+    public Object getNoticeDetail(String noticeId){
+        try {
+            return noticeMapper.getNoticeDetail(noticeId);
+        } catch (Exception e){
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
+    }
+
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public int addNewNotice(Notice newNotice) {
         try {
