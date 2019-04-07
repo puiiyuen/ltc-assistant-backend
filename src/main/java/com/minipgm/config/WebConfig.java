@@ -13,6 +13,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         //photo access controller
         super.addInterceptors(registry);
         registry.addInterceptor(new UserRoleAuthorizationInterceptor()).addPathPatterns("/photo/**");
+        registry.addInterceptor(new UserRoleAuthorizationInterceptor()).addPathPatterns("/notices/pic/**");
 
     }
 
@@ -21,6 +22,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         //before upload to linux server change the path to "file:/opt/photo/"
         registry.addResourceHandler("/photo/**").addResourceLocations("file:D:/opt/photo/");
 //        registry.addResourceHandler("/photo/**").addResourceLocations("file:/opt/photo/");
+        registry.addResourceHandler("/notices/pic/**").addResourceLocations("file:D:/opt/notices/");
+//        registry.addResourceHandler("/notices/pic/**").addResourceLocations("file:/opt/notices/");
         super.addResourceHandlers(registry);
     }
 

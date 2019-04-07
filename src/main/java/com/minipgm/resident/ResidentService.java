@@ -7,6 +7,7 @@
 
 package com.minipgm.resident;
 
+import com.minipgm.config.configInfo;
 import com.minipgm.enums.*;
 import com.minipgm.transaction.bill.BillList;
 import com.minipgm.transaction.bill.BillMapper;
@@ -88,10 +89,8 @@ public class ResidentService {
     public int updatePhotoById(byte[] photo, String photoName, String goverId) {
         try {
             String UPLOAD_FOLDER = "/opt/photo/";
-//            development
-            String api = "http://localhost:8080";
-//            live
-//            String api = "";
+            String api = configInfo.getApi(0);
+
             Path path = Paths.get(UPLOAD_FOLDER + photoName);
             if (!Files.isWritable(path)) {
                 Files.createDirectories(Paths.get(UPLOAD_FOLDER));
@@ -101,10 +100,12 @@ public class ResidentService {
             if (residentMapper.updatePhotoByGoverId(photoUrl, goverId) == 1) {
                 return operationStatus.SUCCESSFUL;
             } else {
+                //缺少删除图片
                 return operationStatus.FAILED;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            //缺少删除图片
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
             return operationStatus.SERVERERROR;
         }

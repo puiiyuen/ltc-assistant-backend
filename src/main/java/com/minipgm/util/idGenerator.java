@@ -1,6 +1,7 @@
 package com.minipgm.util;
 
 import com.minipgm.health.HealthMapper;
+import com.minipgm.message.notice.NoticeMapper;
 import com.minipgm.transaction.bill.BillMapper;
 import com.minipgm.transaction.payment.PaymentMapper;
 import com.minipgm.user.UserMapper;
@@ -22,6 +23,8 @@ public class idGenerator {
     private PaymentMapper paymentMapper;
     @Autowired
     private HealthMapper healthMapper;
+    @Autowired
+    private NoticeMapper noticeMapper;
 
 
     public static int today() {
@@ -82,5 +85,15 @@ public class idGenerator {
             return "report"+(idGenerator.today()*10000+1);
         }
 
+    }
+
+    public String noticeId(){
+        String maxNoticeId = noticeMapper.maxNoticeId('%'+Integer.toString(idGenerator.today())+'%');
+        if (maxNoticeId != null){
+            maxNoticeId = maxNoticeId.substring(6);
+            return "notice"+(Integer.parseInt(maxNoticeId)+1);
+        } else {
+            return "notice"+(idGenerator.today()*10000+1);
+        }
     }
 }
