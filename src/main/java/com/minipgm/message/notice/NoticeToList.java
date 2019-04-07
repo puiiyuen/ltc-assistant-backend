@@ -1,5 +1,5 @@
 /**
- * Notice Class
+ * NoticeToList Class
  *
  * @author Peiyuan
  * 2019-04-05
