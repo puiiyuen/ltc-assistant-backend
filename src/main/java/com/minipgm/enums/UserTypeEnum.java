@@ -3,6 +3,7 @@ package com.minipgm.enums;
 public enum UserTypeEnum {
     ROOT("ROOT"),
     ADMIN("ADMIN"),
+    STAFF("STAFF"),
     RESIDENT("RESIDENT"),
     RESFAMILY("RESFAMILY"),
     NOTYPE("NOTYPE");

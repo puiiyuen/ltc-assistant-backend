@@ -101,6 +101,7 @@ public class ResidentService {
                 return operationStatus.SUCCESSFUL;
             } else {
                 //缺少删除图片
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
                 return operationStatus.FAILED;
             }
         } catch (Exception e) {
@@ -150,6 +151,7 @@ public class ResidentService {
                 userService.destroyAccount(resId);
                 return operationStatus.SUCCESSFUL;
             } else {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
                 return operationStatus.BILL;
             }
         } catch (Exception e) {

@@ -34,7 +34,7 @@ public class ResidentController {
     @GetMapping("/baseInfo")
     public List<ResidentBase> getResBaseInfo(HttpSession session) {
         try {
-            if (session.getAttribute("userId") != null && session.getAttribute("userType").toString().equals("ADMIN")) {
+            if (sessionCheck.isOnline(session,"ADMIN")) {
                 return residentService.getResBaseInfo();
             } else {
                 return null;
