@@ -149,8 +149,7 @@ public class ResidentController {
     @PostMapping("/search")
     public List<ResidentBase> searchResidents(@RequestBody Map<String, Object> param, HttpSession session) {
         try {
-            if (session.getAttribute("userId") != null &&
-                    session.getAttribute("userType").toString().equals("ADMIN")) {
+            if (sessionCheck.isOnline(session,"ADMIN")) {
                 String searchInput = param.get("search").toString();
                 if (searchInput.equals("")) {
                     return null;

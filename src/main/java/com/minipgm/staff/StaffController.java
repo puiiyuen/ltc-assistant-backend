@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 @RestController
@@ -70,7 +71,7 @@ public class StaffController {
                 Staff newStaff = new Staff(staffId, param.get("name").toString(), param.get("goverId").toString(),
                         param.get("phone").toString(), param.get("email").toString(),
                         SexEnum.valueOf(param.get("sex").toString()), Date.valueOf(param.get("dob").toString()),
-                        param.get("address").toString(), param.get("photo").toString(),
+                        param.get("address").toString(), param.get("photoUrl").toString(),
                         Date.valueOf(param.get("moveInDate").toString()));
                 return staffService.addStaff(newStaff, staffRegcode);
 
@@ -85,13 +86,14 @@ public class StaffController {
 
     @PostMapping("/upload-photo")
     public Object uploadPhoto(@RequestParam("photo") MultipartFile photo,
-                              @RequestParam("goverId") String goverId,
                               HttpSession session) {
         try {
             if (sessionCheck.isOnline(session, "ADMIN")) {
                 byte[] bytes = photo.getBytes();
-                String photoSuffix = photo.getOriginalFilename().substring(photo.getOriginalFilename().lastIndexOf('.'));
-                String photoName = goverId + photoSuffix;
+                String photoSuffix = photo.getOriginalFilename()
+                        .substring(photo.getOriginalFilename().lastIndexOf('.'));
+                String photoName = new SimpleDateFormat("yyyy-MM-dd-HHmmss").format(new java.util.Date())
+                        + photoSuffix;
                 return staffService.uploadPhoto(bytes, photoName);
             } else {
                 return operationStatus.FAILED;
@@ -109,7 +111,7 @@ public class StaffController {
                 Staff staff = new Staff(Integer.parseInt(param.get("staffId").toString()), param.get("name").toString(),
                         param.get("goverId").toString(), param.get("phone").toString(), param.get("email").toString(),
                         SexEnum.valueOf(param.get("sex").toString()), Date.valueOf(param.get("dob").toString()),
-                        param.get("address").toString(), param.get("photo").toString(),
+                        param.get("address").toString(), param.get("photoUrl").toString(),
                         Date.valueOf(param.get("moveInDate").toString()));
                 return staffService.modifyStaff(staff);
             } else {
@@ -130,6 +132,30 @@ public class StaffController {
                 return operationStatus.FAILED;
             }
         } catch (Exception e) {
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
+    }
+
+    @PostMapping("/search")
+    public Object searchStaffs(@RequestBody Map<String,Object> param, HttpSession session ){
+        try {
+            if (sessionCheck.isOnline(session,"ADMIN")){
+                String searchInput = param.get("search").toString();
+                if (searchInput.equals("")){
+                    return null;
+                }
+                int staffId;
+                if (searchInput.matches("^[0-9]+$")){
+                    staffId = Integer.parseInt(searchInput);
+                    return staffService.searchStaffs(staffId,"noname");
+                } else {
+                    return staffService.searchStaffs(-1,searchInput);
+                }
+            } else {
+                return operationStatus.FAILED;
+            }
+        }  catch (Exception e){
             e.printStackTrace();
             return operationStatus.SERVERERROR;
         }

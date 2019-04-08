@@ -10,17 +10,19 @@ public class StaffToList {
     private String name;
     private SexEnum sex;
     private Date dob;
+    private String phone;
     private int status;
 
     public StaffToList() {
         super();
     }
 
-    public StaffToList(int staffId, String name, SexEnum sex, Date dob, int status) {
+    public StaffToList(int staffId, String name, SexEnum sex, Date dob, String phone, int status) {
         this.staffId = staffId;
         this.name = name;
         this.sex = sex;
         this.dob = dob;
+        this.phone = phone;
         this.status = status;
     }
 
@@ -62,5 +64,13 @@ public class StaffToList {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

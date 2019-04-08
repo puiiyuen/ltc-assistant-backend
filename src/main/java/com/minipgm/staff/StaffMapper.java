@@ -35,12 +35,30 @@ public interface StaffMapper {
             @Result(property = "sex", column = "sex"),
             @Result(property = "dob", column = "dob"),
             @Result(property = "phone", column = "phone"),
+            @Result(property = "goverId",column = "gover_id"),
+            @Result(property = "photoUrl",column = "photo_url"),
             @Result(property = "status",column = "current_status"),
+            @Result(property = "moveInDate",column = "move_in_date"),
+            @Result(property = "createDate",column = "create_date"),
+            @Result(property = "updateDate",column = "update_date")
     })
     @Select("SELECT s.*,u.phone,u.email " +
             "FROM staff_profile as s,user_auth as u " +
             "WHERE u.user_id=s.staff_id AND u.user_id=#{staffId}")
     Staff getStaffDetail(int staffId);
+
+    @Results({
+            @Result(property = "staffId", column = "staff_id"),
+            @Result(property = "name", column = "name"),
+            @Result(property = "sex", column = "sex"),
+            @Result(property = "dob", column = "dob"),
+            @Result(property = "phone", column = "phone"),
+            @Result(property = "status",column = "current_status"),
+    })
+    @Select("SELECT s.staff_id,s.name,s.sex,s.dob,s.current_status,u.phone " +
+            "FROM staff_profile as s,user_auth as u " +
+            "WHERE u.user_id=s.staff_id AND (u.user_id=#{staffId} OR s.name=#{name})")
+    List<StaffToList> searchStaffs(int staffId,String name);
 
     @Select("SELECT name FROM staff_profile WHERE gover_id=#{goverId}")
     String existStaff(String goverId);

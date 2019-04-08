@@ -48,6 +48,15 @@ public class StaffService {
         }
     }
 
+    public Object searchStaffs(int staffId,String name){
+        try {
+            return staffMapper.searchStaffs(staffId,name);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
+    }
+
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public int addStaff(Staff newStaff, int staffRegcode) {
         try {
@@ -80,8 +89,9 @@ public class StaffService {
             }
             Files.write(path, photo);
             String photoUrl = api + "/photo/" + photoName;
-            Map<String, String> wrapperUrl = new HashMap<String, String>() {{
+            Map<String, Object> wrapperUrl = new HashMap<String, Object>() {{
                 put("link", photoUrl);
+                put("operationStatus",operationStatus.SUCCESSFUL);
             }};
             return wrapperUrl;
         } catch (Exception e) {
@@ -95,7 +105,8 @@ public class StaffService {
         try {
             if (staffMapper.modifyStaff(staff.getStaffId(), staff.getName(), staff.getSex(), staff.getDob(),
                     staff.getGoverId(), staff.getAddress(), staff.getPhotoUrl(), staff.getMoveInDate()) == 1 &&
-                    userService.modifyContact(staff.getStaffId(), staff.getPhone(), staff.getEmail()) == 1) {
+                    userService.modifyContact(staff.getStaffId(), staff.getPhone(), staff.getEmail())
+                            == operationStatus.SUCCESSFUL) {
                 return operationStatus.SUCCESSFUL;
             } else {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -112,7 +123,7 @@ public class StaffService {
     public int deleteStaff(int staffId) {
         try {
             if (staffMapper.deleteStaff(staffId) == 1 &&
-                    userService.destroyAccount(staffId) == 1) {
+                    userService.destroyAccount(staffId) == operationStatus.SUCCESSFUL) {
                 return operationStatus.SUCCESSFUL;
             } else {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
