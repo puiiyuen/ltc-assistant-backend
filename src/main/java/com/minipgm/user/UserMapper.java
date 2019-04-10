@@ -16,10 +16,14 @@ public interface UserMapper {
     @Select("SELECT username FROM user_auth WHERE user_id=#{userId} AND account_status='activated'")
     String isActivated(int userId);
 
-    @Select("SELECT username FROM user_auth " +
+    @Results({
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "userType", column = "user_type")
+    })
+    @Select("SELECT user_id,user_type FROM user_auth " +
             "WHERE user_id=#{userId} AND password=#{password} " +
-            "AND user_type=#{userType} AND account_status='activated'")
-    String existUser(int userId, String password, UserTypeEnum userType);
+            "AND account_status='activated'")
+    User existUser(int userId, String password);
 
     @Results({
             @Result(property = "userId", column = "user_id"),

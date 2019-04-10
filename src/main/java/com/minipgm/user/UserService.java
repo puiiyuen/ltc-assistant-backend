@@ -15,6 +15,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class UserService {
 
@@ -29,17 +32,26 @@ public class UserService {
      * @return Operation status code
      */
 
-    public int login(int userId, String password) {
-        if (userMapper.isActivated(userId) != null) {
-            String encryptedPassword = shaEncryption.passwordEncryption(password);
-            if (userMapper.existUser(userId, encryptedPassword, UserTypeEnum.ADMIN) != null) {
-                return operationStatus.SUCCESSFUL;
+    public Map<String,Object> login(int userId, String password) {
+        HashMap<String,Object> result = new HashMap<>();
+        try {
+            if (userMapper.isActivated(userId) != null) {
+                String encryptedPassword = shaEncryption.passwordEncryption(password);
+                User existUser = userMapper.existUser(userId, encryptedPassword);
+                if (existUser != null) {
+                    result.put("user",existUser);
+                    result.put("status",operationStatus.SUCCESSFUL);
+                } else {
+                    result.put("status",operationStatus.FAILED);
+                }
             } else {
-                return operationStatus.FAILED;
+                result.put("status",operationStatus.INACTIVATED);
             }
-
-        } else {
-            return operationStatus.INACTIVATED;
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("status",operationStatus.SERVERERROR);
+            return result;
         }
 
     }
@@ -66,7 +78,12 @@ public class UserService {
     }
 
     public User onlineUser(int userId) {
-        return userMapper.getUserById(userId);
+        try {
+            return userMapper.getUserById(userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
@@ -84,15 +101,15 @@ public class UserService {
     }
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public int modifyContact(int userId,String phone,String email){
+    public int modifyContact(int userId, String phone, String email) {
         try {
-            if (userMapper.modifyContact(userId,phone,email) == 1){
+            if (userMapper.modifyContact(userId, phone, email) == 1) {
                 return operationStatus.SUCCESSFUL;
             } else {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
                 return operationStatus.FAILED;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
             return operationStatus.SERVERERROR;
@@ -100,15 +117,15 @@ public class UserService {
     }
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public int destroyAccount(int userId){
+    public int destroyAccount(int userId) {
         try {
-            if (userMapper.destroyAccount(userId) == 1){
+            if (userMapper.destroyAccount(userId) == 1) {
                 return operationStatus.SUCCESSFUL;
             } else {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 return operationStatus.FAILED;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return operationStatus.SERVERERROR;

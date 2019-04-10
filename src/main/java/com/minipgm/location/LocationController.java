@@ -22,12 +22,17 @@ public class LocationController {
     @Autowired
     private LocationService locationService;
 
-    @PostMapping("/geofence")// add session check later
+    @PostMapping("/list")// add session check later
     public int geoFence(@RequestBody List<Map<String,Object>> param){
-        System.out.println(param);
+        List<Location> locationList = new ArrayList<>();
         for (Map item:param){
-            System.out.println(item);
+            Location location = new Location(Integer.parseInt(item.get("userId").toString()),
+                    Double.parseDouble(item.get("longitude").toString()),
+                    Double.parseDouble(item.get("latitude").toString()),
+                    item.get("timestamp").toString());
+            locationList.add(location);
         }
+
         return operationStatus.SUCCESSFUL;
     }
 

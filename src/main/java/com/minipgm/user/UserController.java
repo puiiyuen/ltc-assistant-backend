@@ -21,21 +21,28 @@ import java.util.*;
 public class UserController {
 
     @Autowired
-    private UserService service;
+    private UserService userService;
 
     @PostMapping("/login")
-    public int login(@RequestBody Map<String, Object> param, HttpSession session) {
+    public Object login(@RequestBody Map<String, Object> param, HttpSession session) {
         try {
             int userId = Integer.parseInt(param.get("userId").toString());
             String password = param.get("password").toString();
-            int toLogin = service.login(userId, password);
-            if (toLogin == operationStatus.SUCCESSFUL) {
-                session.setAttribute("userId", userId);
-                session.setAttribute("userType", UserTypeEnum.ADMIN);
-                session.setMaxInactiveInterval(600);
+            Map<String, Object> toLogin = userService.login(userId, password);
+            User user  = (User) toLogin.get("user");
+            if (Integer.parseInt(toLogin.get("status").toString()) == operationStatus.SUCCESSFUL) {
+                session.setAttribute("userId", user.getUserId());
+                session.setAttribute("userType", user.getUserType());
+                if (user.getUserType() == UserTypeEnum.ADMIN){
+                    session.setMaxInactiveInterval(600);
+                }
+                if (user.getUserType() == UserTypeEnum.RESIDENT
+                        || user.getUserType() == UserTypeEnum.RESFAMILY){
+                    session.setMaxInactiveInterval(7*24*3600);
+                }
                 return operationStatus.SUCCESSFUL;
             } else {
-                return toLogin;
+                return Integer.parseInt(toLogin.get("status").toString());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,7 +56,7 @@ public class UserController {
             int userId = Integer.parseInt(param.get("userId").toString());
             String password = param.get("password").toString();
             int activateCode = Integer.parseInt(param.get("activateCode").toString());
-            if (service.activateAccount(userId, password, activateCode) == 1) {
+            if (userService.activateAccount(userId, password, activateCode) == 1) {
                 return operationStatus.SUCCESSFUL;
             } else {
                 return operationStatus.FAILED;
@@ -79,7 +86,7 @@ public class UserController {
         User fetch = new User();
         try {
             if (session.getAttribute("userId") != null) {
-                fetch = service.onlineUser(Integer.parseInt(session.getAttribute("userId").toString()));
+                fetch = userService.onlineUser(Integer.parseInt(session.getAttribute("userId").toString()));
                 return fetch;
             }
         } catch (Exception e) {

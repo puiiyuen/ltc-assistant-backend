@@ -69,7 +69,7 @@ public class NoticeService {
             String UPLOAD_FOLDER = "/opt/notices/";
             String api = configInfo.getApi(0);
 
-            Path path = Paths.get(UPLOAD_FOLDER + pictureName);
+           Path path = Paths.get(UPLOAD_FOLDER + pictureName);
             if (!Files.isWritable(path)) {
                 Files.createDirectories(Paths.get(UPLOAD_FOLDER));
             }
