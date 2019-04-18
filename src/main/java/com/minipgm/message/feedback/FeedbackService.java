@@ -6,7 +6,7 @@
  */
 package com.minipgm.message.feedback;
 
-import com.minipgm.util.operationStatus;
+import com.minipgm.utils.operationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.*;

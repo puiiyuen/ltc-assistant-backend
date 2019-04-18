@@ -9,7 +9,7 @@
 package com.minipgm.user;
 
 import com.minipgm.enums.UserTypeEnum;
-import com.minipgm.util.operationStatus;
+import com.minipgm.utils.operationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -71,9 +71,9 @@ public class UserController {
     public int sessionCheck(HttpSession session) {
         try {
             if (session.getAttribute("userId") != null) {
-                return operationStatus.ISEXIST;
+                return operationStatus.IS_EXIST;
             } else {
-                return operationStatus.NOTEXIST;
+                return operationStatus.NOT_EXIST;
             }
         } catch (Exception e) {
             e.printStackTrace();

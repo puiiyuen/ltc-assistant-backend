@@ -6,7 +6,7 @@
  */
 
 
-package com.minipgm.util;
+package com.minipgm.utils;
 
 import java.nio.charset.StandardCharsets;
 import java.security.*;

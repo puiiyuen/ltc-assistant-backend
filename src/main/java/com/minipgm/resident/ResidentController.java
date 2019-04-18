@@ -8,10 +8,10 @@
 package com.minipgm.resident;
 
 import com.minipgm.enums.SexEnum;
-import com.minipgm.util.idGenerator;
-import com.minipgm.util.operationStatus;
-import com.minipgm.util.regCodeGenerator;
-import com.minipgm.util.sessionCheck;
+import com.minipgm.utils.idGenerator;
+import com.minipgm.utils.operationStatus;
+import com.minipgm.utils.regCodeGenerator;
+import com.minipgm.utils.sessionCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,7 +53,7 @@ public class ResidentController {
                 int resId = Integer.parseInt(param.get("resId").toString());
                 return residentService.getResDetailById(resId);
             } else {
-                return operationStatus.NOTEXIST;
+                return operationStatus.NOT_EXIST;
             }
         } catch (Exception e) {
             e.printStackTrace();

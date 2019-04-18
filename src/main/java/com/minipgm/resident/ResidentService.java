@@ -13,7 +13,7 @@ import com.minipgm.transaction.bill.BillList;
 import com.minipgm.transaction.bill.BillMapper;
 import com.minipgm.transaction.payment.PaymentMapper;
 import com.minipgm.user.UserService;
-import com.minipgm.util.*;
+import com.minipgm.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.*;

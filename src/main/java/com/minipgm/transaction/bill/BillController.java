@@ -7,8 +7,8 @@
 
 package com.minipgm.transaction.bill;
 
-import com.minipgm.util.operationStatus;
-import com.minipgm.util.sessionCheck;
+import com.minipgm.utils.operationStatus;
+import com.minipgm.utils.sessionCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

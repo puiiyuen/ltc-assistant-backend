@@ -1,4 +1,4 @@
-package com.minipgm.util;
+package com.minipgm.utils;
 
 import com.minipgm.user.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.minipgm.util;
+package com.minipgm.utils;
 
 import javax.servlet.http.HttpSession;
 

@@ -1,4 +1,4 @@
-package com.minipgm.util;
+package com.minipgm.utils;
 
 import com.minipgm.health.HealthMapper;
 import com.minipgm.message.feedback.FeedbackMapper;
@@ -6,7 +6,6 @@ import com.minipgm.message.notice.NoticeMapper;
 import com.minipgm.transaction.bill.BillMapper;
 import com.minipgm.transaction.payment.PaymentMapper;
 import com.minipgm.user.UserMapper;
-import org.apache.catalina.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

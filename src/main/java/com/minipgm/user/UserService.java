@@ -8,7 +8,7 @@
 package com.minipgm.user;
 
 import com.minipgm.enums.UserTypeEnum;
-import com.minipgm.util.*;
+import com.minipgm.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;

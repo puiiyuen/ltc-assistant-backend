@@ -8,10 +8,9 @@
 package com.minipgm.transaction.payment;
 
 import com.minipgm.enums.PaymentPlatformEnum;
-import com.minipgm.util.idGenerator;
-import com.minipgm.util.operationStatus;
-import com.minipgm.util.sessionCheck;
-import javafx.beans.binding.ObjectBinding;
+import com.minipgm.utils.idGenerator;
+import com.minipgm.utils.operationStatus;
+import com.minipgm.utils.sessionCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
