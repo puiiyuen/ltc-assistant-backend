@@ -5,7 +5,7 @@
  * 2019-03-26
  */
 
-package com.minipgm.location;
+package com.minipgm.security.location;
 
 import com.minipgm.utils.operationStatus;
 import com.minipgm.utils.sessionCheck;
@@ -44,19 +44,7 @@ public class LocationController {
         }
     }
 
-    @GetMapping("/geofence")
-    public Object getUserLocation(HttpSession session) {
-        try {
-            if (sessionCheck.isOnline(session, "ADMIN")) {
-                return new ArrayList<>();
-            } else {
-                return operationStatus.FAILED;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return operationStatus.SERVERERROR;
-        }
-    }
+
 
     @PostMapping("/create-geofence")
     public Object createGeoFence(@RequestBody Map<String, Object> param, HttpSession session) {
@@ -107,6 +95,5 @@ public class LocationController {
             return operationStatus.SERVERERROR;
         }
     }
-
 
 }

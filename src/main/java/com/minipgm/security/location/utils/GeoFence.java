@@ -1,8 +1,15 @@
-package com.minipgm.location.utils;
+/**
+ * Geo Fence
+ *
+ * @author Peiyuan
+ * 2019-04-15
+ */
+
+package com.minipgm.security.location.utils;
 
 import java.util.List;
 
-public class GoeFence {
+public class GeoFence {
 
 
     /**

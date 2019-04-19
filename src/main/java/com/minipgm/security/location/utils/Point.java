@@ -1,4 +1,4 @@
-package com.minipgm.location.utils;
+package com.minipgm.security.location.utils;
 
 public class Point {
 

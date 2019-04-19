@@ -5,7 +5,7 @@
  * 2019-03-26
  */
 
-package com.minipgm.location;
+package com.minipgm.security.location;
 
 import java.sql.Timestamp;
 

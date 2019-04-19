@@ -1,4 +1,11 @@
-package com.minipgm.location.utils;
+/**
+ * Location Converter
+ *
+ * @author Peiyuan
+ * 2019-04-15
+ */
+
+package com.minipgm.security.location.utils;
 
 public class LocationConverter {
 
