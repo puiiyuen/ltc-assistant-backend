@@ -1,9 +1,8 @@
 package com.minipgm.config;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.context.annotation.*;
+import org.springframework.web.servlet.config.annotation.*;
+
 
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
@@ -26,5 +25,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 //        registry.addResourceHandler("/notices/pic/**").addResourceLocations("file:/opt/notices/");
         super.addResourceHandlers(registry);
     }
+
 
 }

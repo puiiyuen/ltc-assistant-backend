@@ -28,10 +28,9 @@ public class MonitorController {
     private MonitorService monitorService;
 
     @PostMapping("/monitor")
-    public Object securityMonitor(@RequestBody Map<String,Object> param ,HttpSession session) {
+    public Object securityMonitor(HttpSession session) {
         try {
             if (sessionCheck.isOnline(session,"ADMIN")){
-                locationService.fenceCheck(param.get("gid").toString());
                 return monitorService.getSecurityList();
             } else {
                 return operationStatus.FAILED;
@@ -56,6 +55,22 @@ public class MonitorController {
         }
     }
 
+    @PostMapping("/alert")
+    public Object getAlert(@RequestBody Map<String,Object> param,HttpSession session){
+        try{
+            if (sessionCheck.isOnline(session,"ADMIN")){
+                String incidentId = param.get("incidentId").toString();
+                return monitorService.getAlert(incidentId);
+            } else {
+                return operationStatus.FAILED;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
+    }
+
+
     @PostMapping("/sos")
     public Object helpRequest(@RequestBody Map<String,Object> param){
         try {
@@ -65,6 +80,34 @@ public class MonitorController {
                     param.get("timestamp").toString());
             return locationService.helpRequest(location);
         } catch (Exception e){
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
+    }
+
+    @PostMapping("/process-incident")
+    public int toProcessIncident(@RequestBody Map<String,Object> param,HttpSession session){
+        try {
+            if (sessionCheck.isOnline(session,"ADMIN")){
+                int processStatus = (int)param.get("processStatus");
+                String incidentId = param.get("incidentId").toString();
+                if (processStatus == 1){
+                    int staffId = (int)param.get("staffId");
+                    return monitorService.processIncident(incidentId,staffId);
+                } else if (processStatus == 2) {
+                    int staffId = (int)param.get("staffId");
+                    String comment = param.get("comment").toString();
+                    return monitorService.finishIncident(staffId,incidentId,comment);
+                } else if (processStatus == 3){
+                    int staffId = (int) session.getAttribute("userId");
+                    return monitorService.ignoreIncident(staffId,incidentId);
+                } else {
+                    return operationStatus.FAILED;
+                }
+            } else {
+                return operationStatus.FAILED;
+            }
+        } catch (Exception e) {
             e.printStackTrace();
             return operationStatus.SERVERERROR;
         }

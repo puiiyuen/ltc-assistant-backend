@@ -77,5 +77,8 @@ public interface StaffMapper {
     @Delete("DELETE FROM staff_profile WHERE staff_id=#{staffId}")
     int deleteStaff(int staffId);
 
+    @Update("UPDATE staff_profile SET current_status=#{status} " +
+            "WHERE staff_id=#{staffId} AND current_status!=2")
+    int staffAttendance(int staffId,int status);
 
 }

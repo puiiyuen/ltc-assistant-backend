@@ -26,13 +26,17 @@ public class UserController {
     @PostMapping("/login")
     public Object login(@RequestBody Map<String, Object> param, HttpSession session) {
         try {
-            int userId = Integer.parseInt(param.get("userId").toString());
+            String userId = param.get("userId").toString();
             String password = param.get("password").toString();
+            String platform = param.get("platform").toString();
             Map<String, Object> toLogin = userService.login(userId, password);
             User user  = (User) toLogin.get("user");
             if (Integer.parseInt(toLogin.get("status").toString()) == operationStatus.SUCCESSFUL) {
                 session.setAttribute("userId", user.getUserId());
                 session.setAttribute("userType", user.getUserType());
+                if (user.getUserType() != UserTypeEnum.ADMIN && platform.equals("CONSOLE")){
+                    return operationStatus.FAILED;
+                }
                 if (user.getUserType() == UserTypeEnum.ADMIN){
                     session.setMaxInactiveInterval(600);
                 }
@@ -53,7 +57,7 @@ public class UserController {
     @PostMapping("/activate")
     public int activate(@RequestBody Map<String, Object> param) {
         try {
-            int userId = Integer.parseInt(param.get("userId").toString());
+            String userId = param.get("userId").toString();
             String password = param.get("password").toString();
             int activateCode = Integer.parseInt(param.get("activateCode").toString());
             if (userService.activateAccount(userId, password, activateCode) == 1) {
@@ -86,7 +90,7 @@ public class UserController {
         User fetch = new User();
         try {
             if (session.getAttribute("userId") != null) {
-                fetch = userService.onlineUser(Integer.parseInt(session.getAttribute("userId").toString()));
+                fetch = userService.getUserById(Integer.parseInt(session.getAttribute("userId").toString()));
                 return fetch;
             }
         } catch (Exception e) {

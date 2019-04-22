@@ -32,7 +32,7 @@ public class UserService {
      * @return Operation status code
      */
 
-    public Map<String,Object> login(int userId, String password) {
+    public Map<String,Object> login(String userId, String password) {
         HashMap<String,Object> result = new HashMap<>();
         try {
             if (userMapper.isActivated(userId) != null) {
@@ -66,7 +66,7 @@ public class UserService {
      */
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public int activateAccount(int userId, String password, int activateCode) {
+    public int activateAccount(String userId, String password, int activateCode) {
         try {
             String encryptedPassword = shaEncryption.passwordEncryption(password);
             return userMapper.activateAccount(userId, encryptedPassword, activateCode);
@@ -77,7 +77,7 @@ public class UserService {
         }
     }
 
-    public User onlineUser(int userId) {
+    public User getUserById(int userId) {
         try {
             return userMapper.getUserById(userId);
         } catch (Exception e) {

@@ -6,6 +6,7 @@ public class SecurityDTO {
 
     private String incidentId;
     private int resId;
+    private String name;
     private int type;
     private double longitude;
     private double latitude;
@@ -20,11 +21,12 @@ public class SecurityDTO {
         super();
     }
 
-    public SecurityDTO(String incidentId, int resId, int type, double longitude, double latitude,
+    public SecurityDTO(String incidentId, int resId, String name, int type, double longitude, double latitude,
                        Timestamp recordTime, int staffId, int processStatus,
                        Timestamp processTime, Timestamp finishTime, String comment) {
         this.incidentId = incidentId;
         this.resId = resId;
+        this.name = name;
         this.type = type;
         this.longitude = longitude;
         this.latitude = latitude;
@@ -122,5 +124,13 @@ public class SecurityDTO {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

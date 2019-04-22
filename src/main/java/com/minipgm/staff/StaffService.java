@@ -136,4 +136,20 @@ public class StaffService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
+    public int staffAttendance(int staffId,int status){
+        try {
+            if (staffMapper.staffAttendance(staffId,status) == 1){
+                return operationStatus.SUCCESSFUL;
+            } else {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                return operationStatus.FAILED;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return operationStatus.SERVERERROR;
+        }
+    }
+
 }

@@ -24,9 +24,10 @@ public interface LocationMapper {
             @Result(property = "userId",column = "user_id"),
             @Result(property = "longitude", column = "longitude"),
             @Result(property = "latitude", column = "latitude"),
+            @Result(property = "unixTs",column = "unix_ts"),
             @Result(property = "recordDate", column = "record_date")
     })
-    @Select("SELECT user_id,longitude,longitude,max(record_date) AS record_date " +
+    @Select("SELECT user_id,longitude,latitude,unix_ts,max(record_date) AS record_date " +
             "FROM location GROUP BY user_id")
     List<Location> getUserLocation();
 
@@ -34,8 +35,8 @@ public interface LocationMapper {
             @Result(property = "x", column = "longitude"),
             @Result(property = "y", column = "latitude")
     })
-    @Select("SELECT longitude,latitude FROM geofence WHERE gid=#{gid}")
-    List<Point> getFence(String gid);
+    @Select("SELECT longitude,latitude FROM geofence")
+    List<Point> getFence();
 
     @Insert("INSERT INTO geofence (user_id,gid,longitude,latitude) " +
             "VALUES(#{userId},#{gid},#{longitude},#{latitude})")
@@ -44,8 +45,11 @@ public interface LocationMapper {
     @Delete("DELETE FROM geofence WHERE gid=#{gid}")
     int deleteFencePoint(String gid);
 
-    @Insert("INSERT INTO security (incident_id,res_id,type,longitude,latitude,record_date) " +
-            "VALUES(#{incidentId},#{resId},#{type},#{longitude},#{latitude},#{recordDate})")
+    @Insert("INSERT INTO security (incident_id,res_id,type,longitude,latitude,record_time) " +
+            "SELECT #{incidentId},#{resId},#{type},#{longitude},#{latitude},#{recordDate} " +
+            "FROM dual WHERE NOT EXISTS (SELECT res_id FROM security " +
+            "WHERE (res_id = #{resId} AND type = #{type} AND (process_status=0 OR process_status=1)) " +
+            "OR (res_id = #{resId} AND type = #{type} AND record_time=#{recordDate})) ")
     int addSecurityRecord(String incidentId, int resId, int type,
                           double longitude, double latitude, Timestamp recordDate);
 

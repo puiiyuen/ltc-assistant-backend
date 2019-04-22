@@ -160,6 +160,21 @@ public class StaffController {
             return operationStatus.SERVERERROR;
         }
     }
-
+    
+    @PostMapping("/attendance")
+    public int staffAttendance(@RequestBody Map<String,Object> param, HttpSession session){
+        try {
+            if (sessionCheck.isOnline(session,"ADMIN")){
+                int staffId = (int) param.get("staffId");
+                int status = (int) param.get("status");
+                return staffService.staffAttendance(staffId,status);
+            } else {
+                return operationStatus.FAILED;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
+    }
 
 }

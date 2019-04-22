@@ -13,17 +13,18 @@ import org.apache.ibatis.annotations.*;
 @Mapper
 public interface UserMapper {
 
-    @Select("SELECT username FROM user_auth WHERE user_id=#{userId} AND account_status='activated'")
-    String isActivated(int userId);
+    @Select("SELECT username FROM user_auth " +
+            "WHERE (user_id=#{userId} OR phone=#{userId} OR email=#{userId}) AND account_status='activated'")
+    String isActivated(String userId);
 
     @Results({
             @Result(property = "userId", column = "user_id"),
             @Result(property = "userType", column = "user_type")
     })
     @Select("SELECT user_id,user_type FROM user_auth " +
-            "WHERE user_id=#{userId} AND password=#{password} " +
+            "WHERE (user_id=#{userId} OR phone=#{userId} OR email=#{userId}) AND password=#{password} " +
             "AND account_status='activated'")
-    User existUser(int userId, String password);
+    User existUser(String userId, String password);
 
     @Results({
             @Result(property = "userId", column = "user_id"),
@@ -37,8 +38,9 @@ public interface UserMapper {
 
     @Update("UPDATE user_auth SET password=#{password},account_status='activated',regcode=-1," +
             "update_date=CURRENT_TIMESTAMP " +
-            "WHERE user_id=#{userId} AND regcode=#{activateCode} AND account_status='inactivated'")
-    int activateAccount(int userId, String password, int activateCode);
+            "WHERE (user_id=#{userId} OR phone=#{userId} OR email=#{userId}) " +
+            "AND regcode=#{activateCode} AND account_status='inactivated'")
+    int activateAccount(String userId, String password, int activateCode);
 
     @Insert("INSERT INTO user_auth (user_id,username,user_type,regcode,phone,email) " +
             "VALUES (#{userId},#{username},#{userType},#{regcode},#{phone},#{email})")
@@ -57,6 +59,8 @@ public interface UserMapper {
             " WHERE user_id=#{userId} AND account_status!='destroy'")
     int modifyContact(int userId, String phone, String email);
 
-    @Update("UPDATE user_auth SET account_status='destroy',update_date=CURRENT_TIMESTAMP WHERE user_id=#{userId}")
+    @Update("UPDATE user_auth SET email=null,phone=null,account_status='destroy',update_date=CURRENT_TIMESTAMP " +
+            "WHERE user_id=#{userId}")
     int destroyAccount(int userId);
+
 }
