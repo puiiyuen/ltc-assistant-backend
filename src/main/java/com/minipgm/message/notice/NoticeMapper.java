@@ -36,6 +36,15 @@ public interface NoticeMapper {
             "WHERE notice_id=#{noticeId}")
     Notice getNoticeDetail(String noticeId);
 
+    @Results({
+            @Result(property = "noticeTitle", column = "notice_title"),
+            @Result(property = "noticeContent", column = "notice_content")
+    })
+    @Select("SELECT notice_title,notice_content FROM notice " +
+            "WHERE notice_status=1 ORDER BY update_date DESC " +
+            "LIMIT 0,3")
+    List<Notice> displayNotice();
+
     @Insert("INSERT INTO notice (user_id,notice_id,notice_title,notice_content,notice_status) " +
             "VALUES (#{userId},#{noticeId},#{noticeTitle},#{noticeContent},#{noticeStatus})")
     int addNewNotice(int userId, String noticeId, String noticeTitle, String noticeContent, int noticeStatus);

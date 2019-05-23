@@ -12,7 +12,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         //photo access controller
         super.addInterceptors(registry);
         registry.addInterceptor(new UserRoleAuthorizationInterceptor()).addPathPatterns("/photo/**");
-        registry.addInterceptor(new UserRoleAuthorizationInterceptor()).addPathPatterns("/notices/pic/**");
+//        registry.addInterceptor(new UserRoleAuthorizationInterceptor()).addPathPatterns("/notices/pic/**");
 
     }
 

@@ -27,8 +27,8 @@ public interface LocationMapper {
             @Result(property = "unixTs",column = "unix_ts"),
             @Result(property = "recordDate", column = "record_date")
     })
-    @Select("SELECT user_id,longitude,latitude,unix_ts,max(record_date) AS record_date " +
-            "FROM location GROUP BY user_id")
+    @Select("SELECT * FROM location loc " +
+            "WHERE unix_ts=(SELECT max(unix_ts) FROM location WHERE loc.user_id = user_id)")
     List<Location> getUserLocation();
 
     @Results({

@@ -32,11 +32,11 @@ public class UserController {
             Map<String, Object> toLogin = userService.login(userId, password);
             User user  = (User) toLogin.get("user");
             if (Integer.parseInt(toLogin.get("status").toString()) == operationStatus.SUCCESSFUL) {
-                session.setAttribute("userId", user.getUserId());
-                session.setAttribute("userType", user.getUserType());
                 if (user.getUserType() != UserTypeEnum.ADMIN && platform.equals("CONSOLE")){
                     return operationStatus.FAILED;
                 }
+                session.setAttribute("userId", user.getUserId());
+                session.setAttribute("userType", user.getUserType());
                 if (user.getUserType() == UserTypeEnum.ADMIN){
                     session.setMaxInactiveInterval(600);
                 }

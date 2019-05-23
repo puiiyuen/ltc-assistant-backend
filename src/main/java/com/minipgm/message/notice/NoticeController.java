@@ -57,6 +57,16 @@ public class NoticeController {
         }
     }
 
+    @PostMapping("/display")
+    public Object getNotice(@RequestBody Map<String,Object> param){
+        try {
+            return noticeService.displayNotice((int)param.get("position"));
+        } catch (Exception e){
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
+    }
+
     @PostMapping("/detail")
     public Object getNoticeDetail(@RequestBody Map<String,Object> param, HttpSession session) {
         try {

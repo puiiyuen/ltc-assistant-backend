@@ -32,6 +32,10 @@ public interface FeedbackMapper {
     @Select("SELECT * FROM feedback WHERE feedback_id=#{feedbackId}")
     Feedback getFeedbackDetail(String feedbackId);
 
+    @Select("INSERT INTO feedback (user_id,feedback_id,feedback_title,feedback_content) " +
+            "VALUES (#{userId},#{feedbackId},#{feedbackTitle},#{feedbackContent})")
+    int addFeedback(int userId,String feedbackId,String feedbackTitle,String feedbackContent);
+
     @Delete("DELETE FROM feedback WHERE feedback_id=#{feedbackId}")
     int deleteFeedback(String feedbackId);
 

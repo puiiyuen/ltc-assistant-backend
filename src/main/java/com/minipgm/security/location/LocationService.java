@@ -8,13 +8,10 @@
 package com.minipgm.security.location;
 
 import com.minipgm.security.location.utils.*;
-import com.minipgm.utils.idGenerator;
-import com.minipgm.utils.operationStatus;
+import com.minipgm.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.*;
+import org.springframework.stereotype.*;
 import org.springframework.transaction.annotation.*;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
@@ -93,7 +90,7 @@ public class LocationService {
     public void fenceCheck() {
         try {
             List<Point> fence = locationMapper.getFence();
-            if (fence != null) {
+            if (fence != null && !fence.isEmpty()) {
                 List<Location> userLocations = locationMapper.getUserLocation();
                 for (Location userLocation : userLocations) {
                     Point point = new Point(userLocation.getLongitude(), userLocation.getLatitude());
@@ -125,8 +122,9 @@ public class LocationService {
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public Object helpRequest(Location location) {
         try {
+            Double[] wgs84ToGcj02 = LocationConverter.WGS84ToGCJ02(location.getLongitude(), location.getLatitude());
             locationMapper.addSecurityRecord(idGenerator.incidentId(), location.getUserId(), 2,
-                    location.getLongitude(), location.getLatitude(), location.getRecordDate());
+                    wgs84ToGcj02[0],wgs84ToGcj02[1], location.getRecordDate());
             return operationStatus.SUCCESSFUL;
         } catch (Exception e) {
             e.printStackTrace();

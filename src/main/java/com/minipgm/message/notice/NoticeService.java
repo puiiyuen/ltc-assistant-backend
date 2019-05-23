@@ -50,6 +50,16 @@ public class NoticeService {
         }
     }
 
+    public Object displayNotice(int position){
+        try {
+            List<Notice> notices = noticeMapper.displayNotice();
+            return notices.get(position-1);
+        } catch (Exception e){
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
+    }
+
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public int addNewNotice(Notice newNotice) {
         try {

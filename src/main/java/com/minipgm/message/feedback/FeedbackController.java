@@ -50,6 +50,23 @@ public class FeedbackController {
         }
     }
 
+    @PostMapping("/add")
+    public int addFeedback(@RequestBody Map<String,Object> param,HttpSession session){
+        try {
+            if (sessionCheck.isOnline(session,"RESIDENT")||
+            sessionCheck.isOnline(session,"RESFAMILY")){
+                 return feedbackService.addFeedback((int)param.get("userId"),
+                         param.get("title").toString(),
+                         param.get("content").toString());
+            } else {
+                return operationStatus.FAILED;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return operationStatus.SERVERERROR;
+        }
+    }
+
     @PostMapping("/delete")
     public int deleteFeedback(@RequestBody Map<String, Object> param, HttpSession session) {
         try {

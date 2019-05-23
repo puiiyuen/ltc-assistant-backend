@@ -14,6 +14,10 @@ import org.apache.ibatis.annotations.*;
 public interface UserMapper {
 
     @Select("SELECT username FROM user_auth " +
+            "WHERE user_id=#{userId} OR phone=#{userId} OR email=#{userId}")
+    String isExsit(String userId);
+
+    @Select("SELECT username FROM user_auth " +
             "WHERE (user_id=#{userId} OR phone=#{userId} OR email=#{userId}) AND account_status='activated'")
     String isActivated(String userId);
 
@@ -30,9 +34,10 @@ public interface UserMapper {
             @Result(property = "userId", column = "user_id"),
             @Result(property = "username", column = "username"),
             @Result(property = "phone", column = "phone"),
-            @Result(property = "email", column = "email")
+            @Result(property = "email", column = "email"),
+            @Result(property = "userType", column = "user_type")
     })
-    @Select("SELECT user_id,username,phone,email FROM user_auth WHERE user_id=#{userId} " +
+    @Select("SELECT user_id,username,phone,email,user_type FROM user_auth WHERE user_id=#{userId} " +
             "AND account_status='activated'")
     User getUserById(int userId);
 

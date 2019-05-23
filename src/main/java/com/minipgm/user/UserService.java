@@ -35,6 +35,10 @@ public class UserService {
     public Map<String,Object> login(String userId, String password) {
         HashMap<String,Object> result = new HashMap<>();
         try {
+            if (userMapper.isExsit(userId)==null){
+                result.put("status",operationStatus.FAILED);
+                return result;
+            }
             if (userMapper.isActivated(userId) != null) {
                 String encryptedPassword = shaEncryption.passwordEncryption(password);
                 User existUser = userMapper.existUser(userId, encryptedPassword);

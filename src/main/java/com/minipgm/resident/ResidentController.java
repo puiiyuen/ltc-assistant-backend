@@ -48,8 +48,7 @@ public class ResidentController {
     @PostMapping("/detailInfo")
     public Object getResDetailInfo(@RequestBody Map<String, Object> param, HttpSession session) {
         try {
-            if (session.getAttribute("userId") != null && session.getAttribute("userType").toString().equals("ADMIN")) {
-
+            if (sessionCheck.isOnline(session,"ADMIN")) {
                 int resId = Integer.parseInt(param.get("resId").toString());
                 return residentService.getResDetailById(resId);
             } else {
